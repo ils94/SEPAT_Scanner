@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/procurar"
+        android:icon="@drawable/search"
+        android:title="Procurar"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/copiar"
+        android:icon="@drawable/copy"
+        android:title="Copiar"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/manual"
+        android:title="Inserir Manualmente" />
+
+    <item android:title="Selecionar Modo">
+
+        <menu>
+
+            <item
+                android:id="@+id/padrao"
+                android:title="Padrão" />
+
+            <item
+                android:id="@+id/descricao"
+                android:title="Patrimônio com Descrição" />
+
+            <item
+                android:id="@+id/checking"
+                android:title="Checking de Relação" />
+
+            <item
+                android:id="@+id/ns"
+                android:title="Número de Série" />
+
+        </menu>
+
+    </item>
+
+    <item android:title="Relação">
+
+        <menu>
+
+            <item
+                android:id="@+id/enviar"
+                android:title="Enviar Relação" />
+
+            <item
+                android:id="@+id/abrir"
+                android:title="Abrir Relação" />
+
+        </menu>
+
+    </item>
+
+    <item android:title="Mais...">
+
+        <menu>
+
+            <item
+                android:id="@+id/editavel"
+                android:title="Desativar/Ativar Edição" />
+
+            <item
+                android:id="@+id/fonte"
+                android:title="Alterar Tamanho da Fonte" />
+
+            <item
+                android:id="@+id/contarLinhas"
+                android:title="Contar Linhas" />
+
+            <item
+                android:id="@+id/forcarSalvar"
+                android:title="Forçar Salvar" />
+
+        </menu>
+
+    </item>
+
+    <item android:title="Apagar...">
+
+        <menu>
+
+            <item
+                android:id="@+id/apagar"
+                android:title="Apagar tudo" />
+
+            <item
+                android:id="@+id/apagarUltimo"
+                android:title="Apagar Último" />
+
+            <item
+                android:id="@+id/voltarUltimo"
+                android:title="Voltar Último" />
+
+        </menu>
+
+    </item>
+
+</menu>
