@@ -20,6 +20,8 @@ public class QRCodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrcode);
 
+        imageView = findViewById(R.id.qrcode);
+
         setTitle("Pastebin QR Code");
 
         try {

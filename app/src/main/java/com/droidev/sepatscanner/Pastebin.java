@@ -35,51 +35,6 @@ public class Pastebin {
 
     Utils utils = new Utils();
 
-    public void pastebin(Activity activity, String url, EditText editText, TextView textView) {
-
-        editText.setText("Buscando no pastebin...");
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                final StringBuilder sb = new StringBuilder();
-
-                try {
-
-                    Document doc = Jsoup.connect(url).get();
-
-                    String text = doc.select("textarea[class=textarea]").text().replace(",", ": ") + "\n";
-
-                    sb.append(text);
-
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            editText.setText(sb);
-
-                            utils.contadorLinhas(editText, textView);
-
-                            utils.manterNaMemoria(activity, editText.getText().toString(), "bens.txt");
-                        }
-                    });
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                    editText.post(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            editText.setText(e.toString());
-                        }
-                    });
-                }
-            }
-        }).start();
-    }
-
     public String gerarChave(String login, String senha, String devKey) {
 
         String result = "";
@@ -125,13 +80,13 @@ public class Pastebin {
         return result;
     }
 
-    public void gerarQRCode(Context context, Activity activity, String content) {
+    public void gerarQRCode(Activity activity, String content) {
 
         new Thread(new Runnable() {
             @Override
             public void run() {
 
-                TinyDB tinyDB = new TinyDB(context);
+                TinyDB tinyDB = new TinyDB(activity.getBaseContext());
 
                 String login = tinyDB.getString("login");
                 String senha = tinyDB.getString("senha");
@@ -143,7 +98,7 @@ public class Pastebin {
                         @Override
                         public void run() {
 
-                            Toast.makeText(context, "Erro, salve uma conta pastebin primeiro", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity.getBaseContext(), "Erro, salve uma conta pastebin primeiro", Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -189,9 +144,9 @@ public class Pastebin {
 
                         System.out.println(result);
 
-                        Intent myIntent = new Intent(context, QRCodeActivity.class);
+                        Intent myIntent = new Intent(activity.getBaseContext(), QRCodeActivity.class);
                         myIntent.putExtra("content", result);
-                        context.startActivity(myIntent);
+                        activity.startActivity(myIntent);
 
                     } catch (IOException e) {
 
@@ -201,7 +156,7 @@ public class Pastebin {
                             @Override
                             public void run() {
 
-                                Toast.makeText(context, "Ocorreu um erro", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(activity.getBaseContext(), "Ocorreu um erro", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -287,5 +242,50 @@ public class Pastebin {
                 devKey.setText("");
             }
         });
+    }
+
+    public void pastebin(Activity activity, String url, EditText editText, TextView textView) {
+
+        editText.setText("Buscando no pastebin...");
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                final StringBuilder sb = new StringBuilder();
+
+                try {
+
+                    Document doc = Jsoup.connect(url).get();
+
+                    String text = doc.select("textarea[class=textarea]").text().replace(",", ": ") + "\n";
+
+                    sb.append(text);
+
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            editText.setText(sb);
+
+                            utils.contadorLinhas(editText, textView);
+
+                            utils.manterNaMemoria(activity, editText.getText().toString(), "bens.txt");
+                        }
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    editText.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            editText.setText(e.toString());
+                        }
+                    });
+                }
+            }
+        }).start();
     }
 }
