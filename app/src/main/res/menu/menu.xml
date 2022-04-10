@@ -42,7 +42,7 @@
 
     </item>
 
-    <item android:title="Relação">
+    <item android:title="Arquivo...">
 
         <menu>
 
@@ -97,6 +97,26 @@
             <item
                 android:id="@+id/voltarUltimo"
                 android:title="Voltar Último" />
+
+        </menu>
+
+    </item>
+
+    <item android:title="Pastebin">
+
+        <menu>
+
+            <item
+                android:id="@+id/gerarQrCode"
+                android:title="Gerar QR Code" />
+
+            <item
+                android:id="@+id/salvarConta"
+                android:title="Salvar Conta pastebin.com" />
+
+            <item
+                android:id="@+id/criarConta"
+                android:title="Criar Conta no pastebin.com" />
 
         </menu>
 

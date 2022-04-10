@@ -24,6 +24,8 @@ public class ScannerActivity extends AppCompatActivity implements DecoratedBarco
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
 
+        setTitle("ESCANEAR");
+
         utils = new Utils();
 
         flash = utils.carregarConfigScanner(ScannerActivity.this, "flash", "rotation")[0];

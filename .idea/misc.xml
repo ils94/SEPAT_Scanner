@@ -3,8 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Igor/Documents/Projetos Android/SepatScanner/app/src/main/res/layout/activity_main.xml" value="0.14375" />
         <entry key="..\:/Users/Igor/Documents/Projetos Android/SepatScanner/app/src/main/res/layout/activity_qrcode.xml" value="0.17572463768115942" />
-        <entry key="..\:/Users/Igor/Documents/Projetos Android/SepatScanner/app/src/main/res/menu/menu.xml" value="0.225" />
+        <entry key="..\:/Users/Igor/Documents/Projetos Android/SepatScanner/app/src/main/res/menu/menu.xml" value="0.1" />
         <entry key="..\:/Users/Igor/Documents/Projetos Android/SepatScanner/app/src/main/res/menu/menu_scanner.xml" value="0.225" />
       </map>
     </option>

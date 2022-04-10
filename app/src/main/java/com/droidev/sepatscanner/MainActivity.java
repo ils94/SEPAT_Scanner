@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     Utils utils;
     CaixaDialogo caixaDialogo;
     Arquivos arquivos;
+    Pastebin pastebin;
 
     TinyDB tinyDB;
 
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         utils = new Utils();
         caixaDialogo = new CaixaDialogo();
         arquivos = new Arquivos();
+        pastebin = new Pastebin();
 
         tinyDB = new TinyDB(MainActivity.this);
 
@@ -370,6 +372,25 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
 
+            case R.id.gerarQrCode:
+
+                pastebin.gerarQRCode(MainActivity.this, MainActivity.this, relacao.getText().toString());
+
+                return true;
+
+            case R.id.salvarConta:
+
+                pastebin.salvarPastebinLogin(MainActivity.this);
+
+                return true;
+
+            case R.id.criarConta:
+
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://pastebin.com/signup"));
+                startActivity(i);
+
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -581,7 +602,7 @@ public class MainActivity extends AppCompatActivity {
 
         contador = relacao.getLineCount() - 1;
 
-        relacaoTV.setText(contador + " itens");
+        relacaoTV.setText(contador + " ITENS");
     }
 
     public void inserirManualmente() {
