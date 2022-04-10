@@ -8,9 +8,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,6 +32,53 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 public class Pastebin {
+
+    Utils utils = new Utils();
+
+    public void pastebin(Activity activity, String url, EditText editText, TextView textView) {
+
+        editText.setText("Buscando no pastebin...");
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                final StringBuilder sb = new StringBuilder();
+
+                try {
+
+                    Document doc = Jsoup.connect(url).get();
+
+                    String text = doc.select("textarea[class=textarea]").text().replace(",", ": ") + "\n";
+
+                    sb.append(text);
+
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            editText.setText(sb);
+
+                            utils.contadorLinhas(editText, textView);
+
+                            utils.manterNaMemoria(activity.getBaseContext(), editText.getText().toString(), "bens.txt");
+                        }
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    editText.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            editText.setText(e.toString());
+                        }
+                    });
+                }
+            }
+        }).start();
+    }
 
     public String gerarChave(String login, String senha, String devKey) {
 

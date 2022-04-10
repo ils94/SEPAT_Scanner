@@ -44,7 +44,7 @@ public class CaixaDialogo {
         });
     }
 
-    public void dialogoSimplesComView(Context context, String title, String message, String hint, String positive, String negative, int inputType, Boolean adapter, onButtonPressed onButtonPressed) {
+    public void dialogoSimplesComView(Context context, String title, String message, String hint, String positive, String negative, int inputType, Boolean adapter, Boolean length, onButtonPressed onButtonPressed) {
 
         AutoCompleteTextView autoCompleteTextView = new AutoCompleteTextView(context);
         autoCompleteTextView.setHint(hint);
@@ -78,25 +78,31 @@ public class CaixaDialogo {
 
                 String string = autoCompleteTextView.getText().toString();
 
-                if (!string.equals("")) {
+                if (length && string.length() < 6) {
 
-                    onButtonPressed.buttonPressed(string);
-
-                    if (adapter) {
-
-                        if (!historicoBens.contains(autoCompleteTextView.getText().toString())) {
-
-                            tinyDB.remove("historicoBens");
-                            historicoBens.add(autoCompleteTextView.getText().toString());
-                            tinyDB.putListString("historicoBens", historicoBens);
-                        }
-                    }
-
-                    dialog.dismiss();
-
+                    Toast.makeText(context, "Erro, o campo deve conter pelo menos 6 números", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    Toast.makeText(context, "Erro, campo vazio", Toast.LENGTH_SHORT).show();
+                    if (!string.equals("")) {
+
+                        onButtonPressed.buttonPressed(string);
+
+                        if (adapter) {
+
+                            if (!historicoBens.contains(autoCompleteTextView.getText().toString())) {
+
+                                tinyDB.remove("historicoBens");
+                                historicoBens.add(autoCompleteTextView.getText().toString());
+                                tinyDB.putListString("historicoBens", historicoBens);
+                            }
+                        }
+
+                        dialog.dismiss();
+
+                    } else {
+
+                        Toast.makeText(context, "Erro, campo vazio", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });

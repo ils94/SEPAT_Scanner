@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.procurar:
 
-                caixaDialogo.dialogoSimplesComView(MainActivity.this, "Procurar", "Digite uma palavra abaixo para realçar.", "Exemplo: estabilizador", "Procurar", "Cancelar", InputType.TYPE_CLASS_TEXT, true, new CaixaDialogo.onButtonPressed() {
+                caixaDialogo.dialogoSimplesComView(MainActivity.this, "Procurar", "Digite uma palavra abaixo para realçar.", "Exemplo: estabilizador", "Procurar", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, new CaixaDialogo.onButtonPressed() {
                     @Override
                     public void buttonPressed(String i) {
 
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.enviar:
 
-                caixaDialogo.dialogoSimplesComView(MainActivity.this, "Enviar relatório", "Nome do arquivo:", "Exemplo: monitores", "Enviar", "Cancelar", InputType.TYPE_CLASS_TEXT, false, new CaixaDialogo.onButtonPressed() {
+                caixaDialogo.dialogoSimplesComView(MainActivity.this, "Enviar relatório", "Nome do arquivo:", "Exemplo: monitores", "Enviar", "Cancelar", InputType.TYPE_CLASS_TEXT, false, false, new CaixaDialogo.onButtonPressed() {
                     @Override
                     public void buttonPressed(String i) {
 
@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
                 float scaledDensity = MainActivity.this.getResources().getDisplayMetrics().scaledDensity;
                 float sp = relacao.getTextSize() / scaledDensity;
 
-                caixaDialogo.dialogoSimplesComView(MainActivity.this, "Alterar tamanho da fonte", "Insira o tamanho abaixo:", "O tamanho atual é: " + sp, "Ok", "Cancelar", (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL), false, new CaixaDialogo.onButtonPressed() {
+                caixaDialogo.dialogoSimplesComView(MainActivity.this, "Alterar tamanho da fonte", "Insira o tamanho abaixo:", "O tamanho atual é: " + sp, "Ok", "Cancelar", (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL), false, false, new CaixaDialogo.onButtonPressed() {
                     @Override
                     public void buttonPressed(String i) {
 
@@ -421,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     if (i.equals("true")) {
 
-                                        pastebin(intentResult.getContents());
+                                        pastebin.pastebin(MainActivity.this, intentResult.getContents(), relacao, relacaoTV);
                                     }
                                 }
                             });
@@ -454,7 +454,7 @@ public class MainActivity extends AppCompatActivity {
 
                         } else {
 
-                            caixaDialogo.dialogoSimplesComView(MainActivity.this, "Descrição", "Patrimônio: " + intentResult.getContents() + "\n\nInsira a descrição do bem abaixo:", "Exemplo: mesa reta", "Ok", "Cancelar", InputType.TYPE_CLASS_TEXT, true, new CaixaDialogo.onButtonPressed() {
+                            caixaDialogo.dialogoSimplesComView(MainActivity.this, "Descrição", "Patrimônio: " + intentResult.getContents() + "\n\nInsira a descrição do bem abaixo:", "Exemplo: mesa reta", "Ok", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, new CaixaDialogo.onButtonPressed() {
                                 @Override
                                 public void buttonPressed(String i) {
 
@@ -598,16 +598,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void contadorLinhas() {
 
-        int contador;
-
-        contador = relacao.getLineCount() - 1;
-
-        relacaoTV.setText(contador + " ITENS");
+        utils.contadorLinhas(relacao, relacaoTV);
     }
 
     public void inserirManualmente() {
 
-        caixaDialogo.dialogoSimplesComView(MainActivity.this, "Modo manual", "Insira o número patrimonial abaixo:", "Exemplo: 012345", "Ok", "Cancelar", InputType.TYPE_CLASS_NUMBER, false,
+        caixaDialogo.dialogoSimplesComView(MainActivity.this, "Modo manual", "Insira o número patrimonial abaixo:", "Exemplo: 012345", "Ok", "Cancelar", InputType.TYPE_CLASS_NUMBER, false, true,
                 new CaixaDialogo.onButtonPressed() {
                     @Override
                     public void buttonPressed(String i) {
@@ -676,7 +672,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 } else {
 
-                                    caixaDialogo.dialogoSimplesComView(MainActivity.this, "Descrição", "Patrimônio: " + i + "\n\nInsira a descrição do bem abaixo:", "Exemplo: mesa reta", "Ok", "Cancelar", InputType.TYPE_CLASS_TEXT, true, new CaixaDialogo.onButtonPressed() {
+                                    caixaDialogo.dialogoSimplesComView(MainActivity.this, "Descrição", "Patrimônio: " + i + "\n\nInsira a descrição do bem abaixo:", "Exemplo: mesa reta", "Ok", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, new CaixaDialogo.onButtonPressed() {
                                         @Override
                                         public void buttonPressed(String j) {
 
@@ -706,44 +702,5 @@ public class MainActivity extends AppCompatActivity {
     public void manterNaMemoria() {
 
         utils.manterNaMemoria(MainActivity.this, relacao.getText().toString(), "bens.txt");
-    }
-
-    public void pastebin(String url) {
-
-        relacao.setText("Buscando no pastebin...");
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                final StringBuilder sb = new StringBuilder();
-
-                try {
-
-                    Document doc = Jsoup.connect(url).get();
-
-                    String text = doc.select("textarea[class=textarea]").text().replace(",", ": ") + "\n";
-
-                    sb.append(text);
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            relacao.setText(sb);
-
-                            contadorLinhas();
-
-                            manterNaMemoria();
-                        }
-                    });
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                    relacao.setText(e.toString());
-                }
-            }
-        }).start();
     }
 }

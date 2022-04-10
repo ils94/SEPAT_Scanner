@@ -25,6 +25,8 @@ import androidx.core.content.FileProvider;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -93,43 +95,6 @@ public class Utils {
         }).start();
     }
 
-    public void scanner(Activity context) {
-
-        IntentIntegrator intentIntegrator = new IntentIntegrator(context);
-        intentIntegrator.setPrompt("Aponte a câmera para o código de barras ou QR code");
-        intentIntegrator.setCaptureActivity(ScannerActivity.class);
-        intentIntegrator.setCameraId(0);
-        intentIntegrator.initiateScan();
-    }
-
-    public void manterNaMemoria(Context context, String content, String file) {
-
-        File path = context.getFilesDir();
-        try {
-            FileOutputStream writer = new FileOutputStream(new File(path, file));
-            writer.write(content.getBytes());
-            writer.close();
-        } catch (Exception e) {
-            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public String recuperarDaMemoria(Context context, String filename) {
-        File path = context.getFilesDir();
-        File readFrom = new File(path, filename);
-        byte[] content = new byte[(int) readFrom.length()];
-
-        try {
-
-            FileInputStream stream = new FileInputStream(readFrom);
-            stream.read(content);
-            return new String(content);
-
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
     public void copiarTexto(Context context, String string) {
 
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -164,6 +129,24 @@ public class Utils {
         }
     }
 
+    public void contadorLinhas(EditText relacao, TextView relacaoTV) {
+
+        int contador;
+
+        contador = relacao.getLineCount() - 1;
+
+        relacaoTV.setText(contador + " ITENS");
+    }
+
+    public void scanner(Activity context) {
+
+        IntentIntegrator intentIntegrator = new IntentIntegrator(context);
+        intentIntegrator.setPrompt("Aponte a câmera para o código de barras ou QR code");
+        intentIntegrator.setCaptureActivity(ScannerActivity.class);
+        intentIntegrator.setCameraId(0);
+        intentIntegrator.initiateScan();
+    }
+
     public void salvarConfigScanner(Context context, String flashKey, String flash, String rotationKey, String rotation) {
 
         TinyDB tinydb = new TinyDB(context);
@@ -193,5 +176,33 @@ public class Utils {
         }
 
         return new String[]{tinyFlashKey, tinyRotationKey};
+    }
+
+    public void manterNaMemoria(Context context, String content, String file) {
+
+        File path = context.getFilesDir();
+        try {
+            FileOutputStream writer = new FileOutputStream(new File(path, file));
+            writer.write(content.getBytes());
+            writer.close();
+        } catch (Exception e) {
+            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public String recuperarDaMemoria(Context context, String filename) {
+        File path = context.getFilesDir();
+        File readFrom = new File(path, filename);
+        byte[] content = new byte[(int) readFrom.length()];
+
+        try {
+
+            FileInputStream stream = new FileInputStream(readFrom);
+            stream.read(content);
+            return new String(content);
+
+        } catch (Exception e) {
+            return "";
+        }
     }
 }
