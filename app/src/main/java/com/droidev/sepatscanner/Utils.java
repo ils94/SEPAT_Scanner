@@ -129,13 +129,13 @@ public class Utils {
         }
     }
 
-    public void contadorLinhas(EditText relacao, TextView relacaoTV) {
+    public void contadorLinhas(EditText editText, TextView textView) {
 
         int contador;
 
-        contador = relacao.getLineCount() - 1;
+        contador = editText.getLineCount() - 1;
 
-        relacaoTV.setText(contador + " ITENS");
+        textView.setText(contador + " ITENS");
     }
 
     public void scanner(Activity context) {

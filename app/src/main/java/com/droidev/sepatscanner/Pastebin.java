@@ -61,7 +61,7 @@ public class Pastebin {
 
                             utils.contadorLinhas(editText, textView);
 
-                            utils.manterNaMemoria(activity.getBaseContext(), editText.getText().toString(), "bens.txt");
+                            utils.manterNaMemoria(activity, editText.getText().toString(), "bens.txt");
                         }
                     });
 
