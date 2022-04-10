@@ -12,22 +12,22 @@ import android.view.MenuItem;
 import com.journeyapps.barcodescanner.CaptureManager;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 
-public class Scanner extends AppCompatActivity implements DecoratedBarcodeView.TorchListener {
+public class ScannerActivity extends AppCompatActivity implements DecoratedBarcodeView.TorchListener {
 
     private CaptureManager capture;
     private DecoratedBarcodeView scanner;
     private String rotation, flash;
-    private Utilities utilities;
+    private Utils utils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
 
-        utilities = new Utilities();
+        utils = new Utils();
 
-        flash = utilities.carregarConfigScanner(Scanner.this, "flash", "rotation")[0];
-        rotation = utilities.carregarConfigScanner(Scanner.this, "flash", "rotation")[1];
+        flash = utils.carregarConfigScanner(ScannerActivity.this, "flash", "rotation")[0];
+        rotation = utils.carregarConfigScanner(ScannerActivity.this, "flash", "rotation")[1];
 
         scanner = findViewById(R.id.scanner);
         scanner.setTorchListener(this);
@@ -95,7 +95,7 @@ public class Scanner extends AppCompatActivity implements DecoratedBarcodeView.T
 
         }
 
-        utilities.salvarConfigScanner(Scanner.this, "flash", flash, "rotation", rotation);
+        utils.salvarConfigScanner(ScannerActivity.this, "flash", flash, "rotation", rotation);
     }
 
     @Override
@@ -127,14 +127,14 @@ public class Scanner extends AppCompatActivity implements DecoratedBarcodeView.T
     public void onTorchOn() {
         flash = "On";
 
-        utilities.salvarConfigScanner(Scanner.this, "flash", flash, "rotation", rotation);
+        utils.salvarConfigScanner(ScannerActivity.this, "flash", flash, "rotation", rotation);
     }
 
     @Override
     public void onTorchOff() {
         flash = "Off";
 
-        utilities.salvarConfigScanner(Scanner.this, "flash", flash, "rotation", rotation);
+        utils.salvarConfigScanner(ScannerActivity.this, "flash", flash, "rotation", rotation);
     }
 
     @Override

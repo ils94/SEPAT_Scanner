@@ -30,10 +30,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 
-public class Utilities {
+public class Utils {
 
     Boolean boo = false;
-    ArrayList<String> historicoBens = new ArrayList<>();
 
     public void realcarTexto(TextView tv, String textToHighlight, TextView tv2) {
 
@@ -83,10 +82,10 @@ public class Utilities {
 
                         if (count[0] < 0) {
 
-                            tv2.setText("Achados: " + 0);
+                            tv2.setText("ACHADOS: " + 0);
                         } else {
 
-                            tv2.setText("Achados: " + count[0]);
+                            tv2.setText("ACHADOS: " + count[0]);
                         }
                     }
                 });
@@ -98,119 +97,9 @@ public class Utilities {
 
         IntentIntegrator intentIntegrator = new IntentIntegrator(context);
         intentIntegrator.setPrompt("Aponte a câmera para o código de barras ou QR code");
-        intentIntegrator.setCaptureActivity(Scanner.class);
+        intentIntegrator.setCaptureActivity(ScannerActivity.class);
         intentIntegrator.setCameraId(0);
         intentIntegrator.initiateScan();
-    }
-
-    interface onButtonPressed {
-
-        void buttonPressed(String i);
-    }
-
-    public void dialogoSimples(Context context, String title, String message, String positive, String negative, onButtonPressed onButtonPressed) {
-
-        AlertDialog dialog = new AlertDialog.Builder(context)
-                .setCancelable(false)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton(positive, null)
-                .setNegativeButton(negative, null)
-                .show();
-
-        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                onButtonPressed.buttonPressed("true");
-
-                dialog.dismiss();
-            }
-        });
-    }
-
-    public void dialogoSimplesComView(Context context, String title, String message, String hint, String positive, String negative, int inputType, Boolean adapter, onButtonPressed onButtonPressed) {
-
-        AutoCompleteTextView autoCompleteTextView = new AutoCompleteTextView(context);
-        autoCompleteTextView.setHint(hint);
-        autoCompleteTextView.setInputType(inputType);
-
-        LinearLayout lay = new LinearLayout(context);
-        lay.setOrientation(LinearLayout.VERTICAL);
-        lay.addView(autoCompleteTextView);
-
-        AlertDialog dialog = new AlertDialog.Builder(context)
-                .setCancelable(false)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton(positive, null)
-                .setNegativeButton(negative, null)
-                .setView(lay)
-                .show();
-
-        TinyDB tinyDB = new TinyDB(context);
-
-        historicoBens = tinyDB.getListString("historicoBens");
-
-        ArrayAdapter<String> adapterBens = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, historicoBens);
-        autoCompleteTextView.setAdapter(adapterBens);
-
-        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String string = autoCompleteTextView.getText().toString();
-
-                if (!string.equals("")) {
-
-                    onButtonPressed.buttonPressed(string);
-
-                    if (adapter) {
-
-                        if (!historicoBens.contains(autoCompleteTextView.getText().toString())) {
-
-                            tinyDB.remove("historicoBens");
-                            historicoBens.add(autoCompleteTextView.getText().toString());
-                            tinyDB.putListString("historicoBens", historicoBens);
-                        }
-                    }
-
-                    dialog.dismiss();
-
-                } else {
-
-                    Toast.makeText(context, "Erro, campo vazio", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-    public void enviarArquivo(Context context, String file, String content) {
-
-        try {
-
-            content = content.replace(":", ",");
-
-            FileOutputStream out = context.openFileOutput(file + ".csv", Context.MODE_PRIVATE);
-            out.write((content.getBytes()));
-            out.close();
-
-            File fileLocation = new File(context.getFilesDir(), file + ".csv");
-            Uri path = FileProvider.getUriForFile(context, "com.droidev.sepatscan.fileprovider", fileLocation);
-            Intent fileIntent = new Intent(Intent.ACTION_SEND);
-            fileIntent.setType("text/csv");
-            fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            fileIntent.putExtra(Intent.EXTRA_STREAM, path);
-            context.startActivity(Intent.createChooser(fileIntent, "Enviar"));
-
-        } catch (Exception e) {
-
-            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
-        }
     }
 
     public void manterNaMemoria(Context context, String content, String file) {
