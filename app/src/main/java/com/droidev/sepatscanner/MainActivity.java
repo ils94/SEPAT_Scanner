@@ -417,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 ultimoRelacao();
 
-                                relacao.append(i.toUpperCase() + ": " + intentResult.getContents() + "\n");
+                                relacao.append(i.toUpperCase() + " : " + intentResult.getContents() + "\n");
 
                                 manterNaMemoria();
 
@@ -464,7 +464,7 @@ public class MainActivity extends AppCompatActivity {
 
                     case "checking":
 
-                        if (relacao.getText().toString().contains(intentResult.getContents() + " -> [OK]")) {
+                        if (relacao.getText().toString().contains(intentResult.getContents() + " : [OK]")) {
 
                             Toast.makeText(getBaseContext(), intentResult.getContents() + " consta na lista, e já foi escaneado", Toast.LENGTH_LONG).show();
 
@@ -472,7 +472,7 @@ public class MainActivity extends AppCompatActivity {
 
                             ultimoRelacao();
 
-                            String relacao_check = relacao.getText().toString().replace(intentResult.getContents(), intentResult.getContents() + " -> [OK]");
+                            String relacao_check = relacao.getText().toString().replace(intentResult.getContents(), intentResult.getContents() + " : [OK]");
 
                             relacao.setText(relacao_check);
 
@@ -512,7 +512,7 @@ public class MainActivity extends AppCompatActivity {
 
                     String mLine;
                     while ((mLine = r.readLine()) != null) {
-                        relacao.append(mLine.toUpperCase().replace(",", ": ").replace("  ", " ") + "\n");
+                        relacao.append(mLine.toUpperCase().replace(",", " : ").replace("  ", " ") + "\n");
                     }
                 } catch (IOException e) {
                     Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_SHORT).show();
@@ -557,7 +557,7 @@ public class MainActivity extends AppCompatActivity {
 
                         case "checking":
 
-                            if (relacao.getText().toString().contains(i + " -> [OK]")) {
+                            if (relacao.getText().toString().contains(i + " : [OK]")) {
 
                                 Toast.makeText(getBaseContext(), i + " consta na lista, e já foi escaneado", Toast.LENGTH_LONG).show();
 
@@ -565,7 +565,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 ultimoRelacao();
 
-                                String relacao_check = relacao.getText().toString().replace(i, i + " -> [OK]");
+                                String relacao_check = relacao.getText().toString().replace(i, i + " : [OK]");
 
                                 relacao.setText(relacao_check);
 
@@ -621,7 +621,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     ultimoRelacao();
 
-                                    relacao.append(j.toUpperCase() + ": " + i + "\n");
+                                    relacao.append(j.toUpperCase() + " : " + i + "\n");
 
                                     manterNaMemoria();
 
