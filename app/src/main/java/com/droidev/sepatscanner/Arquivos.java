@@ -16,7 +16,7 @@ public class Arquivos {
 
         try {
 
-            content = content.replace(":", ",");
+            content = content.replace(":", ",").replace(" -> ", ",");
 
             FileOutputStream out = context.openFileOutput(file + ".csv", Context.MODE_PRIVATE);
             out.write((content.getBytes()));

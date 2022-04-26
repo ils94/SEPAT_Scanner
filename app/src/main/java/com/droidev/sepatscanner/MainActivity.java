@@ -2,6 +2,7 @@ package com.droidev.sepatscanner;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,7 +12,6 @@ import android.text.InputType;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -23,11 +23,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -82,43 +78,35 @@ public class MainActivity extends AppCompatActivity {
         numSerie.setEnabled(false);
         ok.setEnabled(false);
 
-        scan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                utils.scanner(MainActivity.this);
-            }
-        });
+        scan.setOnClickListener(v -> utils.scanner(MainActivity.this));
 
-        ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        ok.setOnClickListener(v -> {
 
-                if (patrimonio.getText().toString().equals("") || numSerie.getText().toString().equals("")) {
+            if (patrimonio.getText().toString().equals("") || numSerie.getText().toString().equals("")) {
 
-                    Toast.makeText(MainActivity.this, "Os campos Patrimônio e Número de série não podem está vazios", Toast.LENGTH_SHORT).show();
-                } else if (relacao.getText().toString().contains(patrimonio.getText())) {
+                Toast.makeText(MainActivity.this, "Os campos Patrimônio e Número de série não podem está vazios", Toast.LENGTH_SHORT).show();
+            } else if (relacao.getText().toString().contains(patrimonio.getText())) {
 
-                    Toast.makeText(getBaseContext(), patrimonio.getText() + " Já foi escaneado", Toast.LENGTH_LONG).show();
-                } else {
+                Toast.makeText(getBaseContext(), patrimonio.getText() + " Já foi escaneado", Toast.LENGTH_LONG).show();
+            } else {
 
-                    ultimoRelacao();
+                ultimoRelacao();
 
-                    relacao.append(patrimonio.getText().toString() + ", " + numSerie.getText().toString() + "\n");
+                relacao.append(patrimonio.getText().toString() + ", " + numSerie.getText().toString() + "\n");
 
-                    patrimonio.setText("");
+                patrimonio.setText("");
 
-                    numSerie.setText("");
+                numSerie.setText("");
 
-                    manterNaMemoria();
+                manterNaMemoria();
 
-                    contadorLinhas();
+                contadorLinhas();
 
-                    atualRelacao();
+                atualRelacao();
 
-                    ultimoItem = true;
+                ultimoItem = true;
 
-                    voltarItem = true;
-                }
+                voltarItem = true;
             }
         });
 
@@ -145,16 +133,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        caixaDialogo.dialogoSimples(MainActivity.this, "Sair", "Desejar sair da aplicação?", "Sim", "Não", new CaixaDialogo.onButtonPressed() {
-            @Override
-            public void buttonPressed(String i) {
+        caixaDialogo.dialogoSimples(MainActivity.this, "Sair", "Desejar sair da aplicação?", "Sim", "Não", i -> {
 
-                if (i.equals("true")) {
+            if (i.equals("true")) {
 
-                    manterNaMemoria();
+                manterNaMemoria();
 
-                    MainActivity.this.finish();
-                }
+                MainActivity.this.finish();
             }
         });
     }
@@ -165,19 +150,14 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
 
             case R.id.procurar:
 
-                caixaDialogo.dialogoSimplesComView(MainActivity.this, "Procurar", "Digite uma palavra abaixo para realçar.", "Exemplo: estabilizador", "Procurar", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, new CaixaDialogo.onButtonPressed() {
-                    @Override
-                    public void buttonPressed(String i) {
-
-                        utils.realcarTexto(relacao, i.toUpperCase(), relacaoTV);
-                    }
-                });
+                caixaDialogo.dialogoSimplesComView(MainActivity.this, "Procurar", "Digite uma palavra abaixo para realçar.", "Exemplo: estabilizador", "Procurar", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, i -> utils.realcarTexto(relacao, i.toUpperCase(), relacaoTV));
 
                 return true;
 
@@ -201,33 +181,24 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.enviar:
 
-                caixaDialogo.dialogoSimplesComView(MainActivity.this, "Enviar relatório", "Nome do arquivo:", "Exemplo: monitores", "Enviar", "Cancelar", InputType.TYPE_CLASS_TEXT, false, false, new CaixaDialogo.onButtonPressed() {
-                    @Override
-                    public void buttonPressed(String i) {
-
-                        arquivos.enviarArquivo(MainActivity.this, i, relacao.getText().toString());
-                    }
-                });
+                caixaDialogo.dialogoSimplesComView(MainActivity.this, "Enviar relatório", "Nome do arquivo:", "Exemplo: monitores", "Enviar", "Cancelar", InputType.TYPE_CLASS_TEXT, false, false, i -> arquivos.enviarArquivo(MainActivity.this, i, relacao.getText().toString()));
 
                 return true;
 
             case R.id.abrir:
 
-                caixaDialogo.dialogoSimples(MainActivity.this, "Abrir nova relação", "Abrir uma nova relação irá apagar tudo da relação atual no App. Deseja continuar?", "Sim", "Não", new CaixaDialogo.onButtonPressed() {
-                    @Override
-                    public void buttonPressed(String i) {
-                        if (i.equals("true")) {
+                caixaDialogo.dialogoSimples(MainActivity.this, "Abrir nova relação", "Abrir uma nova relação irá apagar tudo da relação atual no App. Deseja continuar?", "Sim", "Não", i -> {
+                    if (i.equals("true")) {
 
-                            try {
-                                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                                intent.setType("text/csv|text/comma-separated-values|application/csv");
-                                String[] mimetypes = {"text/csv", "text/comma-separated-values", "application/csv", "text/*"};
-                                intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
-                                startActivityForResult(Intent.createChooser(intent, "Abrir relação"), LER_ARQUIVO);
-                            } catch (Exception e) {
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                            intent.setType("text/csv|text/comma-separated-values|application/csv");
+                            String[] mimetypes = {"text/csv", "text/comma-separated-values", "application/csv", "text/*"};
+                            intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
+                            startActivityForResult(Intent.createChooser(intent, "Abrir relação"), LER_ARQUIVO);
+                        } catch (Exception e) {
 
-                                Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_SHORT).show();
-                            }
+                            Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -239,23 +210,20 @@ public class MainActivity extends AppCompatActivity {
                 float scaledDensity = MainActivity.this.getResources().getDisplayMetrics().scaledDensity;
                 float sp = relacao.getTextSize() / scaledDensity;
 
-                caixaDialogo.dialogoSimplesComView(MainActivity.this, "Alterar tamanho da fonte", "Insira o tamanho abaixo:", "O tamanho atual é: " + sp, "Ok", "Cancelar", (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL), false, false, new CaixaDialogo.onButtonPressed() {
-                    @Override
-                    public void buttonPressed(String i) {
+                caixaDialogo.dialogoSimplesComView(MainActivity.this, "Alterar tamanho da fonte", "Insira o tamanho abaixo:", "O tamanho atual é: " + sp, "Ok", "Cancelar", (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL), false, false, i -> {
 
-                        try {
+                    try {
 
-                            relacao.setTextSize(TypedValue.COMPLEX_UNIT_SP, Float.parseFloat(i));
+                        relacao.setTextSize(TypedValue.COMPLEX_UNIT_SP, Float.parseFloat(i));
 
-                            TinyDB tinyDB = new TinyDB(MainActivity.this);
+                        TinyDB tinyDB = new TinyDB(MainActivity.this);
 
-                            tinyDB.remove("Fonte");
-                            tinyDB.putString("Fonte", i);
+                        tinyDB.remove("Fonte");
+                        tinyDB.putString("Fonte", i);
 
-                        } catch (Exception e) {
+                    } catch (Exception e) {
 
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-                        }
+                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -269,15 +237,12 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.forcarSalvar:
 
-                caixaDialogo.dialogoSimples(MainActivity.this, "Salvar", "Salvar todas as alterações na relação atual?", "Sim", "Não", new CaixaDialogo.onButtonPressed() {
-                    @Override
-                    public void buttonPressed(String i) {
-                        if (i.equals("true")) {
+                caixaDialogo.dialogoSimples(MainActivity.this, "Salvar", "Salvar todas as alterações na relação atual?", "Sim", "Não", i -> {
+                    if (i.equals("true")) {
 
-                            manterNaMemoria();
+                        manterNaMemoria();
 
-                            Toast.makeText(getBaseContext(), "Salvo", Toast.LENGTH_SHORT).show();
-                        }
+                        Toast.makeText(getBaseContext(), "Salvo", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -333,18 +298,15 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.apagar:
 
-                caixaDialogo.dialogoSimples(MainActivity.this, "Apagar", "Apagar todos os campos?", "Sim", "Cancelar", new CaixaDialogo.onButtonPressed() {
-                    @Override
-                    public void buttonPressed(String i) {
+                caixaDialogo.dialogoSimples(MainActivity.this, "Apagar", "Apagar todos os campos?", "Sim", "Cancelar", i -> {
 
-                        if (i.equals("true")) {
+                    if (i.equals("true")) {
 
-                            relacao.setText("");
-                            patrimonio.setText("");
-                            numSerie.setText("");
+                        relacao.setText("");
+                        patrimonio.setText("");
+                        numSerie.setText("");
 
-                            contadorLinhas();
-                        }
+                        contadorLinhas();
                     }
                 });
 
@@ -415,14 +377,11 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(getBaseContext(), intentResult.getContents() + " Já foi escaneado", Toast.LENGTH_LONG).show();
                         } else if (intentResult.getContents().contains("pastebin")) {
 
-                            caixaDialogo.dialogoSimples(MainActivity.this, "Carregar nova relação", "Carregar uma nova relação do pastebin?", "Sim", "Cancelar", new CaixaDialogo.onButtonPressed() {
-                                @Override
-                                public void buttonPressed(String i) {
+                            caixaDialogo.dialogoSimples(MainActivity.this, "Carregar nova relação", "Carregar uma nova relação do pastebin?", "Sim", "Cancelar", i -> {
 
-                                    if (i.equals("true")) {
+                                if (i.equals("true")) {
 
-                                        pastebin.pastebin(MainActivity.this, intentResult.getContents(), relacao, relacaoTV);
-                                    }
+                                    pastebin.pastebin(MainActivity.this, intentResult.getContents(), relacao, relacaoTV);
                                 }
                             });
 
@@ -454,24 +413,21 @@ public class MainActivity extends AppCompatActivity {
 
                         } else {
 
-                            caixaDialogo.dialogoSimplesComView(MainActivity.this, "Descrição", "Patrimônio: " + intentResult.getContents() + "\n\nInsira a descrição do bem abaixo:", "Exemplo: mesa reta", "Ok", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, new CaixaDialogo.onButtonPressed() {
-                                @Override
-                                public void buttonPressed(String i) {
+                            caixaDialogo.dialogoSimplesComView(MainActivity.this, "Descrição", "Patrimônio: " + intentResult.getContents() + "\n\nInsira a descrição do bem abaixo:", "Exemplo: mesa reta", "Ok", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, i -> {
 
-                                    ultimoRelacao();
+                                ultimoRelacao();
 
-                                    relacao.append(i.toUpperCase() + ": " + intentResult.getContents() + "\n");
+                                relacao.append(i.toUpperCase() + ": " + intentResult.getContents() + "\n");
 
-                                    manterNaMemoria();
+                                manterNaMemoria();
 
-                                    contadorLinhas();
+                                contadorLinhas();
 
-                                    atualRelacao();
+                                atualRelacao();
 
-                                    ultimoItem = true;
+                                ultimoItem = true;
 
-                                    voltarItem = true;
-                                }
+                                voltarItem = true;
                             });
                         }
 
@@ -494,14 +450,11 @@ public class MainActivity extends AppCompatActivity {
                                     numSerie.setText(intentResult.getContents());
                                 } else {
 
-                                    caixaDialogo.dialogoSimples(MainActivity.this, "Atenção", "Substituir o número de série atual por ''" + intentResult.getContents() + "'' ?", "Sim", "Cancelar", new CaixaDialogo.onButtonPressed() {
-                                        @Override
-                                        public void buttonPressed(String i) {
+                                    caixaDialogo.dialogoSimples(MainActivity.this, "Atenção", "Substituir o número de série atual por ''" + intentResult.getContents() + "'' ?", "Sim", "Cancelar", i -> {
 
-                                            if (i.equals("true")) {
+                                        if (i.equals("true")) {
 
-                                                numSerie.setText(intentResult.getContents());
-                                            }
+                                            numSerie.setText(intentResult.getContents());
                                         }
                                     });
                                 }
@@ -511,7 +464,7 @@ public class MainActivity extends AppCompatActivity {
 
                     case "checking":
 
-                        if (relacao.getText().toString().contains(intentResult.getContents() + " [OK]")) {
+                        if (relacao.getText().toString().contains(intentResult.getContents() + " -> [OK]")) {
 
                             Toast.makeText(getBaseContext(), intentResult.getContents() + " consta na lista, e já foi escaneado", Toast.LENGTH_LONG).show();
 
@@ -519,7 +472,7 @@ public class MainActivity extends AppCompatActivity {
 
                             ultimoRelacao();
 
-                            String relacao_check = relacao.getText().toString().replace(intentResult.getContents(), intentResult.getContents() + " [OK]");
+                            String relacao_check = relacao.getText().toString().replace(intentResult.getContents(), intentResult.getContents() + " -> [OK]");
 
                             relacao.setText(relacao_check);
 
@@ -547,7 +500,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == LER_ARQUIVO
                 && resultCode == Activity.RESULT_OK) {
-            Uri uri = null;
+            Uri uri;
             if (data != null) {
                 uri = data.getData();
 
@@ -561,8 +514,6 @@ public class MainActivity extends AppCompatActivity {
                     while ((mLine = r.readLine()) != null) {
                         relacao.append(mLine.toUpperCase().replace(",", ": ").replace("  ", " ") + "\n");
                     }
-                } catch (FileNotFoundException e) {
-                    Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_SHORT).show();
                 }
@@ -575,11 +526,7 @@ public class MainActivity extends AppCompatActivity {
     public void esperar() {
 
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                contadorLinhas();
-            }
-        }, 3000);
+        handler.postDelayed(this::contadorLinhas, 3000);
     }
 
     public void ultimoRelacao() {
@@ -604,52 +551,77 @@ public class MainActivity extends AppCompatActivity {
     public void inserirManualmente() {
 
         caixaDialogo.dialogoSimplesComView(MainActivity.this, "Modo manual", "Insira o número patrimonial abaixo:", "Exemplo: 012345", "Ok", "Cancelar", InputType.TYPE_CLASS_NUMBER, false, true,
-                new CaixaDialogo.onButtonPressed() {
-                    @Override
-                    public void buttonPressed(String i) {
+                i -> {
 
-                        switch (modo) {
+                    switch (modo) {
 
-                            case "checking":
+                        case "checking":
 
-                                if (relacao.getText().toString().contains(i + " [OK]")) {
+                            if (relacao.getText().toString().contains(i + " -> [OK]")) {
 
-                                    Toast.makeText(getBaseContext(), i + " consta na lista, e já foi escaneado", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getBaseContext(), i + " consta na lista, e já foi escaneado", Toast.LENGTH_LONG).show();
 
-                                } else if (relacao.getText().toString().contains(i)) {
+                            } else if (relacao.getText().toString().contains(i)) {
+
+                                ultimoRelacao();
+
+                                String relacao_check = relacao.getText().toString().replace(i, i + " -> [OK]");
+
+                                relacao.setText(relacao_check);
+
+                                Toast.makeText(getBaseContext(), i + " consta na relação", Toast.LENGTH_LONG).show();
+
+                                manterNaMemoria();
+
+                                atualRelacao();
+
+                                ultimoItem = true;
+
+                                voltarItem = true;
+
+                            } else {
+
+                                Toast.makeText(getBaseContext(), i + " não consta na relação", Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        case "padrao":
+
+                            if (relacao.getText().toString().contains(i)) {
+
+                                Toast.makeText(getBaseContext(), i + " Já foi escaneado", Toast.LENGTH_LONG).show();
+                            } else {
+
+                                ultimoRelacao();
+
+                                relacao.append(i + "\n");
+
+                                manterNaMemoria();
+
+                                contadorLinhas();
+
+                                atualRelacao();
+
+                                ultimoItem = true;
+
+                                voltarItem = true;
+
+                            }
+                            break;
+
+                        case "descricao":
+
+                            if (relacao.getText().toString().contains(i)) {
+
+                                Toast.makeText(getBaseContext(), i + " Já foi escaneado", Toast.LENGTH_LONG).show();
+
+                            } else {
+
+                                caixaDialogo.dialogoSimplesComView(MainActivity.this, "Descrição", "Patrimônio: " + i + "\n\nInsira a descrição do bem abaixo:", "Exemplo: mesa reta", "Ok", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, j -> {
 
                                     ultimoRelacao();
 
-                                    String relacao_check = relacao.getText().toString().replace(i, i + " [OK]");
-
-                                    relacao.setText(relacao_check);
-
-                                    Toast.makeText(getBaseContext(), i + " consta na relação", Toast.LENGTH_LONG).show();
-
-                                    manterNaMemoria();
-
-                                    atualRelacao();
-
-                                    ultimoItem = true;
-
-                                    voltarItem = true;
-
-                                } else {
-
-                                    Toast.makeText(getBaseContext(), i + " não consta na relação", Toast.LENGTH_LONG).show();
-                                }
-                                break;
-
-                            case "padrao":
-
-                                if (relacao.getText().toString().contains(i)) {
-
-                                    Toast.makeText(getBaseContext(), i + " Já foi escaneado", Toast.LENGTH_LONG).show();
-                                } else {
-
-                                    ultimoRelacao();
-
-                                    relacao.append(i + "\n");
+                                    relacao.append(j.toUpperCase() + ": " + i + "\n");
 
                                     manterNaMemoria();
 
@@ -660,41 +632,10 @@ public class MainActivity extends AppCompatActivity {
                                     ultimoItem = true;
 
                                     voltarItem = true;
+                                });
+                            }
 
-                                }
-                                break;
-
-                            case "descricao":
-
-                                if (relacao.getText().toString().contains(i)) {
-
-                                    Toast.makeText(getBaseContext(), i + " Já foi escaneado", Toast.LENGTH_LONG).show();
-
-                                } else {
-
-                                    caixaDialogo.dialogoSimplesComView(MainActivity.this, "Descrição", "Patrimônio: " + i + "\n\nInsira a descrição do bem abaixo:", "Exemplo: mesa reta", "Ok", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, new CaixaDialogo.onButtonPressed() {
-                                        @Override
-                                        public void buttonPressed(String j) {
-
-                                            ultimoRelacao();
-
-                                            relacao.append(j.toUpperCase() + ": " + i + "\n");
-
-                                            manterNaMemoria();
-
-                                            contadorLinhas();
-
-                                            atualRelacao();
-
-                                            ultimoItem = true;
-
-                                            voltarItem = true;
-                                        }
-                                    });
-                                }
-
-                                break;
-                        }
+                            break;
                     }
                 });
     }
