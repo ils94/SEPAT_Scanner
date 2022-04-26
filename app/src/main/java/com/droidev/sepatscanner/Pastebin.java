@@ -87,11 +87,7 @@ public class Pastebin {
         File path = activity.getFilesDir();
         File qrCode = new File(path, "QRCode.png");
 
-        Toast.makeText(activity, "é um arquivo? " + qrCode.isFile(), Toast.LENGTH_SHORT).show();
-
         if (qrCode.isFile()) {
-
-            Toast.makeText(activity, "Tem qrcode", Toast.LENGTH_SHORT).show();
 
             caixaDialogo.dialogoSimples(activity, "Qr Code existente encontrado", "Foi encontrado um QR Code criado anteriormente, deseja abri-lo?", "Sim", "Não", i -> {
 
