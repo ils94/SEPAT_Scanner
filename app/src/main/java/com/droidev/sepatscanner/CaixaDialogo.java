@@ -1,7 +1,6 @@
 package com.droidev.sepatscanner;
 
 import android.content.Context;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -33,14 +32,11 @@ public class CaixaDialogo {
 
         Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        positiveButton.setOnClickListener(v -> {
 
-                onButtonPressed.buttonPressed("true");
+            onButtonPressed.buttonPressed("true");
 
-                dialog.dismiss();
-            }
+            dialog.dismiss();
         });
     }
 
@@ -67,42 +63,39 @@ public class CaixaDialogo {
 
         historicoBens = tinyDB.getListString("historicoBens");
 
-        ArrayAdapter<String> adapterBens = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, historicoBens);
+        ArrayAdapter<String> adapterBens = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, historicoBens);
         autoCompleteTextView.setAdapter(adapterBens);
 
         Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        positiveButton.setOnClickListener(v -> {
 
-                String string = autoCompleteTextView.getText().toString();
+            String string = autoCompleteTextView.getText().toString();
 
-                if (length && string.length() < 6) {
+            if (length && string.length() < 6) {
 
-                    Toast.makeText(context, "Erro, o campo deve conter pelo menos 6 números", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Erro, o campo deve conter pelo menos 6 números", Toast.LENGTH_SHORT).show();
+            } else {
+
+                if (!string.equals("")) {
+
+                    onButtonPressed.buttonPressed(string);
+
+                    if (adapter) {
+
+                        if (!historicoBens.contains(autoCompleteTextView.getText().toString())) {
+
+                            tinyDB.remove("historicoBens");
+                            historicoBens.add(autoCompleteTextView.getText().toString());
+                            tinyDB.putListString("historicoBens", historicoBens);
+                        }
+                    }
+
+                    dialog.dismiss();
+
                 } else {
 
-                    if (!string.equals("")) {
-
-                        onButtonPressed.buttonPressed(string);
-
-                        if (adapter) {
-
-                            if (!historicoBens.contains(autoCompleteTextView.getText().toString())) {
-
-                                tinyDB.remove("historicoBens");
-                                historicoBens.add(autoCompleteTextView.getText().toString());
-                                tinyDB.putListString("historicoBens", historicoBens);
-                            }
-                        }
-
-                        dialog.dismiss();
-
-                    } else {
-
-                        Toast.makeText(context, "Erro, campo vazio", Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(context, "Erro, campo vazio", Toast.LENGTH_SHORT).show();
                 }
             }
         });

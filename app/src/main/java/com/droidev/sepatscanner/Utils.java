@@ -1,97 +1,77 @@
 package com.droidev.sepatscanner;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.BackgroundColorSpan;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.FileProvider;
-
 import com.google.zxing.integration.android.IntentIntegrator;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 
 public class Utils {
 
     Boolean boo = false;
 
+    @SuppressLint("SetTextI18n")
     public void realcarTexto(TextView tv, String textToHighlight, TextView tv2) {
 
         tv2.setText("Procurando...");
 
         final int[] count = {0};
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        new Thread(() -> {
 
-                tv.post(new Runnable() {
-                    @Override
-                    public void run() {
+            tv.post(() -> {
 
-                        SpannableString spannableString = new SpannableString(tv.getText().toString());
-                        BackgroundColorSpan backgroundSpan = new BackgroundColorSpan(Color.WHITE);
-                        spannableString.setSpan(backgroundSpan, 0, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                SpannableString spannableString = new SpannableString(tv.getText().toString());
+                BackgroundColorSpan backgroundSpan = new BackgroundColorSpan(Color.WHITE);
+                spannableString.setSpan(backgroundSpan, 0, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                        tv.setText(spannableString);
+                tv.setText(spannableString);
 
-                        String tvt = tv.getText().toString();
+                String tvt = tv.getText().toString();
 
-                        int ofe = tvt.indexOf(textToHighlight, 0);
-                        Spannable wordToSpan = new SpannableString(tv.getText());
-                        for (int ofs = 0; ofs < tvt.length() && ofe != -1; ofs = ofe + 1) {
-                            ofe = tvt.indexOf(textToHighlight, ofs);
+                int ofe = tvt.indexOf(textToHighlight);
+                Spannable wordToSpan = new SpannableString(tv.getText());
+                for (int ofs = 0; ofs < tvt.length() && ofe != -1; ofs = ofe + 1) {
+                    ofe = tvt.indexOf(textToHighlight, ofs);
 
-                            count[0] = count[0] + 1;
+                    count[0] = count[0] + 1;
 
-                            if (ofe == -1)
-                                break;
-                            else {
+                    if (ofe == -1)
+                        break;
+                    else {
 
-                                wordToSpan.setSpan(new BackgroundColorSpan(Color.YELLOW), ofe, ofe + textToHighlight.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                                tv.setText(wordToSpan, TextView.BufferType.SPANNABLE);
-                            }
-                        }
-
-                        count[0] = count[0] - 1;
+                        wordToSpan.setSpan(new BackgroundColorSpan(Color.YELLOW), ofe, ofe + textToHighlight.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        tv.setText(wordToSpan, TextView.BufferType.SPANNABLE);
                     }
-                });
+                }
 
-                tv2.post(new Runnable() {
-                    @Override
-                    public void run() {
+                count[0] = count[0] - 1;
+            });
 
-                        if (count[0] < 0) {
+            tv2.post(() -> {
 
-                            tv2.setText("ACHADOS: " + 0);
-                        } else {
+                if (count[0] < 0) {
 
-                            tv2.setText("ACHADOS: " + count[0]);
-                        }
-                    }
-                });
-            }
+                    tv2.setText("ACHADOS: " + 0);
+                } else {
+
+                    tv2.setText("ACHADOS: " + count[0]);
+                }
+            });
         }).start();
     }
 
@@ -129,6 +109,7 @@ public class Utils {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     public void contadorLinhas(EditText editText, TextView textView) {
 
         int contador;
