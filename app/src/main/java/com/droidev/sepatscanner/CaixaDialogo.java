@@ -31,10 +31,18 @@ public class CaixaDialogo {
                 .show();
 
         Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
 
         positiveButton.setOnClickListener(v -> {
 
             onButtonPressed.buttonPressed("true");
+
+            dialog.dismiss();
+        });
+
+        negativeButton.setOnClickListener(v -> {
+
+            onButtonPressed.buttonPressed("false");
 
             dialog.dismiss();
         });
