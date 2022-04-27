@@ -140,7 +140,7 @@ public class Pastebin {
                     arguments.put("api_user_key", userKey);
                     arguments.put("api_option", "paste");
                     arguments.put("api_paste_code", content);
-                    arguments.put("api_paste_expire_date", "10M");
+                    arguments.put("api_paste_expire_date", "1D");
 
                     StringJoiner sj = new StringJoiner("&");
 
