@@ -20,7 +20,7 @@ public class CaixaDialogo {
         void buttonPressed(String i);
     }
 
-    public void dialogoSimples(Context context, String title, String message, String positive, String negative, onButtonPressed onButtonPressed) {
+    public void simples(Context context, String title, String message, String positive, String negative, onButtonPressed onButtonPressed) {
 
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setCancelable(false)
@@ -48,7 +48,7 @@ public class CaixaDialogo {
         });
     }
 
-    public void dialogoSimplesComView(Context context, String title, String message, String hint, String positive, String negative, int inputType, Boolean adapter, Boolean length, onButtonPressed onButtonPressed) {
+    public void simplesComView(Context context, String title, String message, String hint, String positive, String negative, int inputType, Boolean adapter, Boolean length, onButtonPressed onButtonPressed) {
 
         AutoCompleteTextView autoCompleteTextView = new AutoCompleteTextView(context);
         autoCompleteTextView.setHint(hint);

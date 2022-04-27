@@ -89,7 +89,7 @@ public class Pastebin {
 
         if (qrCode.isFile()) {
 
-            caixaDialogo.dialogoSimples(activity, "Qr Code existente encontrado", "Foi encontrado um QR Code criado anteriormente, deseja abri-lo?", "Sim", "Não", i -> {
+            caixaDialogo.simples(activity, "Qr Code existente encontrado", "Foi encontrado um QR Code criado anteriormente, deseja abri-lo?", "Sim", "Não", i -> {
 
                 if (i.equals("true")) {
 

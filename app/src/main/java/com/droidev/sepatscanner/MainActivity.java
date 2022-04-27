@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        caixaDialogo.dialogoSimples(MainActivity.this, "Sair", "Desejar sair da aplicação?", "Sim", "Não", i -> {
+        caixaDialogo.simples(MainActivity.this, "Sair", "Desejar sair da aplicação?", "Sim", "Não", i -> {
 
             if (i.equals("true")) {
 
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.procurar:
 
-                caixaDialogo.dialogoSimplesComView(MainActivity.this, "Procurar", "Digite uma palavra abaixo para realçar.", "Exemplo: estabilizador", "Procurar", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, i -> utils.realcarTexto(relacao, i.toUpperCase(), relacaoTV));
+                caixaDialogo.simplesComView(MainActivity.this, "Procurar", "Digite uma palavra abaixo para realçar.", "Exemplo: estabilizador", "Procurar", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, i -> utils.realcarTexto(relacao, i.toUpperCase(), relacaoTV));
 
                 return true;
 
@@ -181,13 +181,13 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.enviar:
 
-                caixaDialogo.dialogoSimplesComView(MainActivity.this, "Enviar relatório", "Nome do arquivo:", "Exemplo: monitores", "Enviar", "Cancelar", InputType.TYPE_CLASS_TEXT, false, false, i -> arquivos.enviarArquivo(MainActivity.this, i, relacao.getText().toString()));
+                caixaDialogo.simplesComView(MainActivity.this, "Enviar relatório", "Nome do arquivo:", "Exemplo: monitores", "Enviar", "Cancelar", InputType.TYPE_CLASS_TEXT, false, false, i -> arquivos.enviarArquivo(MainActivity.this, i, relacao.getText().toString()));
 
                 return true;
 
             case R.id.abrir:
 
-                caixaDialogo.dialogoSimples(MainActivity.this, "Abrir nova relação", "Abrir uma nova relação irá apagar tudo da relação atual no App. Deseja continuar?", "Sim", "Não", i -> {
+                caixaDialogo.simples(MainActivity.this, "Abrir nova relação", "Abrir uma nova relação irá apagar tudo da relação atual no App. Deseja continuar?", "Sim", "Não", i -> {
                     if (i.equals("true")) {
 
                         try {
@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                 float scaledDensity = MainActivity.this.getResources().getDisplayMetrics().scaledDensity;
                 float sp = relacao.getTextSize() / scaledDensity;
 
-                caixaDialogo.dialogoSimplesComView(MainActivity.this, "Alterar tamanho da fonte", "Insira o tamanho abaixo:", "O tamanho atual é: " + sp, "Ok", "Cancelar", (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL), false, false, i -> {
+                caixaDialogo.simplesComView(MainActivity.this, "Alterar tamanho da fonte", "Insira o tamanho abaixo:", "O tamanho atual é: " + sp, "Ok", "Cancelar", (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL), false, false, i -> {
 
                     try {
 
@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.forcarSalvar:
 
-                caixaDialogo.dialogoSimples(MainActivity.this, "Salvar", "Salvar todas as alterações na relação atual?", "Sim", "Não", i -> {
+                caixaDialogo.simples(MainActivity.this, "Salvar", "Salvar todas as alterações na relação atual?", "Sim", "Não", i -> {
                     if (i.equals("true")) {
 
                         manterNaMemoria();
@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.apagar:
 
-                caixaDialogo.dialogoSimples(MainActivity.this, "Apagar", "Apagar todos os campos?", "Sim", "Cancelar", i -> {
+                caixaDialogo.simples(MainActivity.this, "Apagar", "Apagar todos os campos?", "Sim", "Cancelar", i -> {
 
                     if (i.equals("true")) {
 
@@ -377,7 +377,7 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(getBaseContext(), intentResult.getContents() + " Já foi escaneado", Toast.LENGTH_LONG).show();
                         } else if (intentResult.getContents().contains("pastebin")) {
 
-                            caixaDialogo.dialogoSimples(MainActivity.this, "Carregar nova relação", "Carregar uma nova relação do pastebin?", "Sim", "Cancelar", i -> {
+                            caixaDialogo.simples(MainActivity.this, "Carregar nova relação", "Carregar uma nova relação do pastebin?", "Sim", "Cancelar", i -> {
 
                                 if (i.equals("true")) {
 
@@ -413,7 +413,7 @@ public class MainActivity extends AppCompatActivity {
 
                         } else {
 
-                            caixaDialogo.dialogoSimplesComView(MainActivity.this, "Descrição", "Patrimônio: " + intentResult.getContents() + "\n\nInsira a descrição do bem abaixo:", "Exemplo: mesa reta", "Ok", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, i -> {
+                            caixaDialogo.simplesComView(MainActivity.this, "Descrição", "Patrimônio: " + intentResult.getContents() + "\n\nInsira a descrição do bem abaixo:", "Exemplo: mesa reta", "Ok", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, i -> {
 
                                 ultimoRelacao();
 
@@ -450,7 +450,7 @@ public class MainActivity extends AppCompatActivity {
                                     numSerie.setText(intentResult.getContents());
                                 } else {
 
-                                    caixaDialogo.dialogoSimples(MainActivity.this, "Atenção", "Substituir o número de série atual por ''" + intentResult.getContents() + "'' ?", "Sim", "Cancelar", i -> {
+                                    caixaDialogo.simples(MainActivity.this, "Atenção", "Substituir o número de série atual por ''" + intentResult.getContents() + "'' ?", "Sim", "Cancelar", i -> {
 
                                         if (i.equals("true")) {
 
@@ -550,7 +550,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void inserirManualmente() {
 
-        caixaDialogo.dialogoSimplesComView(MainActivity.this, "Modo manual", "Insira o número patrimonial abaixo:", "Exemplo: 012345", "Ok", "Cancelar", InputType.TYPE_CLASS_NUMBER, false, true,
+        caixaDialogo.simplesComView(MainActivity.this, "Modo manual", "Insira o número patrimonial abaixo:", "Exemplo: 012345", "Ok", "Cancelar", InputType.TYPE_CLASS_NUMBER, false, true,
                 i -> {
 
                     switch (modo) {
@@ -617,7 +617,7 @@ public class MainActivity extends AppCompatActivity {
 
                             } else {
 
-                                caixaDialogo.dialogoSimplesComView(MainActivity.this, "Descrição", "Patrimônio: " + i + "\n\nInsira a descrição do bem abaixo:", "Exemplo: mesa reta", "Ok", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, j -> {
+                                caixaDialogo.simplesComView(MainActivity.this, "Descrição", "Patrimônio: " + i + "\n\nInsira a descrição do bem abaixo:", "Exemplo: mesa reta", "Ok", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, j -> {
 
                                     ultimoRelacao();
 
