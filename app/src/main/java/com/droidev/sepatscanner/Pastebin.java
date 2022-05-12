@@ -179,11 +179,16 @@ public class Pastebin {
         devKey.setHint("Sua chave dev api");
         devKey.setInputType(InputType.TYPE_CLASS_TEXT);
 
+        EditText elemento = new EditText(context);
+        elemento.setHint("Elemento da pagina");
+        elemento.setInputType(InputType.TYPE_CLASS_TEXT);
+
         LinearLayout lay = new LinearLayout(context);
         lay.setOrientation(LinearLayout.VERTICAL);
         lay.addView(login);
         lay.addView(senha);
         lay.addView(devKey);
+        lay.addView(elemento);
 
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setCancelable(false)
@@ -200,6 +205,7 @@ public class Pastebin {
         login.setText(tinyDB.getString("login"));
         senha.setText(tinyDB.getString("senha"));
         devKey.setText(tinyDB.getString("devKey"));
+        elemento.setText(tinyDB.getString("elemento"));
 
         Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
         Button neutralButton = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
@@ -211,16 +217,19 @@ public class Pastebin {
                 String loginString = login.getText().toString();
                 String senhaString = senha.getText().toString();
                 String devKeyString = devKey.getText().toString();
+                String elementoString = elemento.getText().toString();
 
-                if (!loginString.equals("") && !senhaString.equals("") && !devKeyString.equals("")) {
+                if (!loginString.equals("") && !senhaString.equals("") && !devKeyString.equals("") && !elementoString.equals("")) {
 
                     tinyDB.remove("login");
                     tinyDB.remove("senha");
                     tinyDB.remove("devKey");
+                    tinyDB.remove("elemento");
 
                     tinyDB.putString("login", loginString);
                     tinyDB.putString("senha", senhaString);
                     tinyDB.putString("devKey", devKeyString);
+                    tinyDB.putString("elemento", elementoString);
 
                     Toast.makeText(context, "Conta salva", Toast.LENGTH_SHORT).show();
 
@@ -256,9 +265,11 @@ public class Pastebin {
 
                 try {
 
+                    TinyDB tinyDB = new TinyDB(activity.getBaseContext());
+
                     Document doc = Jsoup.connect(url).get();
 
-                    String text = doc.select("textarea[class=textarea]").text().replace(",", ": ") + "\n";
+                    String text = doc.select(tinyDB.getString("elemento")).text().replace(",", ": ") + "\n";
 
                     sb.append(text);
 
