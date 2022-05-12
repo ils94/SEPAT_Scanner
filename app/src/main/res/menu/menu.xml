@@ -6,17 +6,13 @@
         android:id="@+id/procurar"
         android:icon="@drawable/search"
         android:title="Procurar"
-        app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/copiar"
-        android:icon="@drawable/copy"
-        android:title="Copiar"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/manual"
-        android:title="Inserir Manualmente" />
+        android:icon="@drawable/manual"
+        android:title="Inserir Manualmente"
+        app:showAsAction="always" />
 
     <item android:title="Selecionar Modo">
 
@@ -61,6 +57,10 @@
     <item android:title="Mais...">
 
         <menu>
+
+            <item
+                android:id="@+id/copiar"
+                android:title="Copiar" />
 
             <item
                 android:id="@+id/editavel"
