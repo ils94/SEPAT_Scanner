@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     TextView relacaoTV;
 
-    String modo = "padrao", ultimo, atual;
+    String modo = "padrao", ultimo, atual, newIntentResult;
 
     Boolean ultimoItem = false, voltarItem = false;
 
@@ -372,16 +372,23 @@ public class MainActivity extends AppCompatActivity {
 
                     case "padrao":
 
-                        if (relacao.getText().toString().contains(intentResult.getContents())) {
+                        newIntentResult = intentResult.getContents();
 
-                            Toast.makeText(getBaseContext(), intentResult.getContents() + " Já foi escaneado", Toast.LENGTH_LONG).show();
-                        } else if (intentResult.getContents().contains("pastebin")) {
+                        if (newIntentResult.length() == 10 && !newIntentResult.contains("pastebin")) {
+
+                            newIntentResult = utils.remover45(newIntentResult);
+                        }
+
+                        if (relacao.getText().toString().contains(newIntentResult)) {
+
+                            Toast.makeText(getBaseContext(), newIntentResult + " Já foi escaneado", Toast.LENGTH_LONG).show();
+                        } else if (newIntentResult.contains("pastebin")) {
 
                             caixaDialogo.simples(MainActivity.this, "Carregar nova relação", "Carregar uma nova relação do pastebin?", "Sim", "Cancelar", i -> {
 
                                 if (i.equals("true")) {
 
-                                    pastebin.pastebin(MainActivity.this, intentResult.getContents(), relacao, relacaoTV);
+                                    pastebin.pastebin(MainActivity.this, newIntentResult, relacao, relacaoTV);
                                 }
                             });
 
@@ -389,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
 
                             ultimoRelacao();
 
-                            relacao.append(intentResult.getContents() + "\n");
+                            relacao.append(newIntentResult + "\n");
 
                             manterNaMemoria();
 
@@ -400,7 +407,6 @@ public class MainActivity extends AppCompatActivity {
                             ultimoItem = true;
 
                             voltarItem = true;
-
                         }
 
                         break;
@@ -464,19 +470,26 @@ public class MainActivity extends AppCompatActivity {
 
                     case "checking":
 
-                        if (relacao.getText().toString().contains(intentResult.getContents() + " : [OK]")) {
+                        newIntentResult = intentResult.getContents();
 
-                            Toast.makeText(getBaseContext(), intentResult.getContents() + " consta na lista, e já foi escaneado", Toast.LENGTH_LONG).show();
+                        if (newIntentResult.length() == 10 && !newIntentResult.contains("pastebin")) {
 
-                        } else if (relacao.getText().toString().contains(intentResult.getContents())) {
+                            newIntentResult = utils.remover45(newIntentResult);
+                        }
+
+                        if (relacao.getText().toString().contains(newIntentResult + " : [OK]")) {
+
+                            Toast.makeText(getBaseContext(), newIntentResult + " consta na lista, e já foi escaneado", Toast.LENGTH_LONG).show();
+
+                        } else if (relacao.getText().toString().contains(newIntentResult)) {
 
                             ultimoRelacao();
 
-                            String relacao_check = relacao.getText().toString().replace(intentResult.getContents(), intentResult.getContents() + " : [OK]");
+                            String relacao_check = relacao.getText().toString().replace(newIntentResult, newIntentResult + " : [OK]");
 
                             relacao.setText(relacao_check);
 
-                            Toast.makeText(getBaseContext(), intentResult.getContents() + " consta na relação", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getBaseContext(), newIntentResult + " consta na relação", Toast.LENGTH_LONG).show();
 
                             manterNaMemoria();
 
@@ -488,7 +501,7 @@ public class MainActivity extends AppCompatActivity {
 
                         } else {
 
-                            Toast.makeText(getBaseContext(), intentResult.getContents() + " não consta na relação", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getBaseContext(), newIntentResult + " não consta na relação", Toast.LENGTH_LONG).show();
                         }
                         break;
                 }

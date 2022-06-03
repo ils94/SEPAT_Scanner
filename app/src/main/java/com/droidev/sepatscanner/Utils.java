@@ -186,4 +186,16 @@ public class Utils {
             return "";
         }
     }
+
+    public String remover45(String string) {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(string);
+
+        sb.deleteCharAt(0);
+        sb.deleteCharAt(0);
+
+        return sb.toString();
+    }
 }
