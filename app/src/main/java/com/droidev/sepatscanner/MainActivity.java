@@ -374,7 +374,7 @@ public class MainActivity extends AppCompatActivity {
 
                         newIntentResult = intentResult.getContents();
 
-                        if (newIntentResult.length() == 10 && !newIntentResult.contains("pastebin")) {
+                        if (newIntentResult.length() == 10) {
 
                             newIntentResult = utils.remover45(newIntentResult);
                         }
@@ -472,7 +472,7 @@ public class MainActivity extends AppCompatActivity {
 
                         newIntentResult = intentResult.getContents();
 
-                        if (newIntentResult.length() == 10 && !newIntentResult.contains("pastebin")) {
+                        if (newIntentResult.length() == 10) {
 
                             newIntentResult = utils.remover45(newIntentResult);
                         }
