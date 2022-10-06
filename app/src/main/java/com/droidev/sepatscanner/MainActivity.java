@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,11 +26,6 @@ import com.google.zxing.integration.android.IntentResult;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 public class MainActivity extends AppCompatActivity {
 
     Button scan, ok;
@@ -37,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     EditText relacao, patrimonio, numSerie;
 
     TextView relacaoTV;
+
+    ScrollView relacaoScrollView;
 
     String modo = "padrao", ultimo, atual, newIntentResult;
 
@@ -75,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
         relacao = findViewById(R.id.relacao);
         patrimonio = findViewById(R.id.patrimonio);
         numSerie = findViewById(R.id.NumSerie);
+
+        relacaoScrollView = findViewById(R.id.relacaoScrollView);
 
         patrimonio.setEnabled(false);
         numSerie.setEnabled(false);
@@ -414,7 +414,7 @@ public class MainActivity extends AppCompatActivity {
 
                             if (relacao.getText().toString().contains(newIntentResult)) {
 
-                                utils.autoScroll(relacao, newIntentResult);
+                                utils.autoScroll(relacaoScrollView, relacao, newIntentResult);
                             }
 
                         } else if (newIntentResult.contains("pastebin")) {
@@ -454,7 +454,7 @@ public class MainActivity extends AppCompatActivity {
 
                             if (relacao.getText().toString().contains(newIntentResult)) {
 
-                                utils.autoScroll(relacao, newIntentResult);
+                                utils.autoScroll(relacaoScrollView, relacao, newIntentResult);
                             }
 
                         } else {
@@ -487,7 +487,7 @@ public class MainActivity extends AppCompatActivity {
 
                             if (relacao.getText().toString().contains(newIntentResult)) {
 
-                                utils.autoScroll(relacao, newIntentResult);
+                                utils.autoScroll(relacaoScrollView, relacao, newIntentResult);
                             }
 
                         } else {
@@ -552,7 +552,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if (relacao.getText().toString().contains(newIntentResult)) {
 
-                            utils.autoScroll(relacao, newIntentResult);
+                            utils.autoScroll(relacaoScrollView, relacao, newIntentResult);
                         }
 
                         break;
@@ -639,7 +639,7 @@ public class MainActivity extends AppCompatActivity {
 
                             if (relacao.getText().toString().contains(i)) {
 
-                                utils.autoScroll(relacao, i);
+                                utils.autoScroll(relacaoScrollView, relacao, i);
                             }
 
                             break;
@@ -652,7 +652,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 if (relacao.getText().toString().contains(i)) {
 
-                                    utils.autoScroll(relacao, i);
+                                    utils.autoScroll(relacaoScrollView, relacao, i);
                                 }
 
                             } else {
@@ -683,7 +683,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 if (relacao.getText().toString().contains(i)) {
 
-                                    utils.autoScroll(relacao, i);
+                                    utils.autoScroll(relacaoScrollView, relacao, i);
                                 }
 
                             } else {

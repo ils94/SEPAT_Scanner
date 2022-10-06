@@ -7,14 +7,12 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.BackgroundColorSpan;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -108,17 +106,21 @@ public class Utils {
         }
     }
 
-    public void autoScroll(EditText et, String s) {
+    public void autoScroll(ScrollView scrollView, EditText editText, String s) {
 
-        realcarTexto(et, s);
+        editText.post(() -> {
 
-        final Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(() -> {
+            realcarTexto(editText, s);
 
-            Layout layout = et.getLayout();
+            int index = editText.getText().toString().indexOf(s);
 
-            et.scrollTo(0, layout.getLineBottom(layout.getLineForOffset(et.getText().toString().indexOf(s))) - (et.getHeight() / 2));
-        }, 500);
+            int line = editText.getLayout().getLineForOffset(index);
+
+            int y = editText.getLayout().getLineTop(line);
+
+            scrollView.smoothScrollTo(0, y);
+
+        });
     }
 
     public void copiarTexto(Context context, String string) {
