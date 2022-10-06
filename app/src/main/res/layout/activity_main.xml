@@ -35,10 +35,8 @@
             android:layout_height="match_parent"
             android:background="@color/white"
             android:gravity="top|start"
-            android:inputType="textMultiLine"
             android:padding="5dp"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textColor="@color/black" />
 
     </ScrollView>
 
