@@ -6,6 +6,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Layout;
@@ -19,9 +20,13 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class Utils {
 
@@ -238,5 +243,24 @@ public class Utils {
         sb.deleteCharAt(0);
 
         return sb.toString();
+    }
+
+    public void csvDataStream(Activity activity, EditText editText, Uri data) {
+
+        try {
+            InputStream inputStream = activity.getContentResolver().openInputStream(data);
+            BufferedReader r = new BufferedReader(new InputStreamReader(inputStream));
+
+            editText.setText("");
+
+            String mLine;
+            while ((mLine = r.readLine()) != null) {
+                editText.append(mLine.toUpperCase().replace(",", ": ").replace("  ", " ") + "\n");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(activity.getBaseContext(), e.toString(), Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -123,6 +123,31 @@ public class MainActivity extends AppCompatActivity {
 
             relacao.setTextSize(TypedValue.COMPLEX_UNIT_SP, Integer.parseInt(tinyDB.getString("Fonte")));
         }
+
+        Intent intent = getIntent();
+
+        Uri data = intent.getData();
+
+        if (data != null) {
+
+            caixaDialogo.simples(MainActivity.this, "Abrir novo arquivo",
+                    "Abrir um novo arquivo irá apagar tudo da relação atual no App. " +
+                            "Deseja continuar?",
+                    "Sim",
+                    "Não",
+                    i -> {
+                        if (i.equals("true")) {
+
+                            if (intent.getType().equals("text/csv")) {
+
+                                utils.csvDataStream(MainActivity.this, relacao, data);
+
+                            }
+
+                            contadorLinhas();
+                        }
+                    });
+        }
     }
 
     @Override
@@ -544,19 +569,7 @@ public class MainActivity extends AppCompatActivity {
             if (data != null) {
                 uri = data.getData();
 
-                try {
-                    InputStream inputStream = getContentResolver().openInputStream(uri);
-                    BufferedReader r = new BufferedReader(new InputStreamReader(inputStream));
-
-                    relacao.setText("");
-
-                    String mLine;
-                    while ((mLine = r.readLine()) != null) {
-                        relacao.append(mLine.toUpperCase().replace(",", " : ").replace("  ", " ") + "\n");
-                    }
-                } catch (IOException e) {
-                    Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_SHORT).show();
-                }
+                utils.csvDataStream(MainActivity.this, relacao, uri);
             }
 
             manterNaMemoria();
