@@ -14,85 +14,95 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:gravity="center"
-        android:padding="5dp"
         android:text="0 ITENS"
-        android:textColor="@color/black"/>
+        android:textColor="@color/black" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#c0c0c0" />
 
-    <EditText
-        android:id="@+id/relacao"
+    <ScrollView
+        android:id="@+id/relacaoScrollView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@color/white"
-        android:gravity="top|start"
-        android:inputType="textMultiLine"
-        android:padding="5dp"
-        android:textSize="18sp"
-        android:textColor="@color/black" />
+        android:fillViewport="true">
+
+        <EditText
+            android:id="@+id/relacao"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="top|start"
+            android:inputType="textMultiLine"
+            android:padding="5dp"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+    </ScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/patrimonio"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Patrimônio"
-            android:inputType="number"
-            android:singleLine="true" />
-
-        <EditText
-            android:id="@+id/NumSerie"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:hint="Número de série"
-            android:singleLine="true" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="5dp">
+        android:layout_height="match_parent"
+        android:layout_weight="5"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <EditText
+                android:id="@+id/patrimonio"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="2dp"
+                android:layout_weight="2"
+                android:hint="Patrimônio"
+                android:inputType="number"
+                android:padding="5dp"
+                android:singleLine="true" />
+
+            <EditText
+                android:id="@+id/NumSerie"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="2dp"
+                android:layout_weight="1"
+                android:hint="Número de série"
+                android:padding="5dp"
+                android:singleLine="true" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:padding="5dp">
 
             <Button
                 android:id="@+id/ok"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="2dp"
+                android:layout_weight="2"
                 android:backgroundTint="@color/white"
                 android:padding="5dp"
                 android:text="Ok" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:padding="5dp">
 
             <Button
                 android:id="@+id/scan"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="2dp"
+                android:layout_weight="1"
                 android:backgroundTint="@color/white"
                 android:padding="5dp"
                 android:text="Escanear" />
+
         </LinearLayout>
 
     </LinearLayout>
