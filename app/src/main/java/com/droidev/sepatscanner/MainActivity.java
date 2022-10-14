@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                     i -> {
                         if (i.equals("true")) {
 
-                            if (intent.getType().equals("text/csv")) {
+                            if (intent.getType().equals("text/comma-separated-values")) {
 
                                 utils.csvDataStream(MainActivity.this, relacao, data);
 
