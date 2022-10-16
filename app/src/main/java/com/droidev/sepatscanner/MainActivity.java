@@ -412,10 +412,7 @@ public class MainActivity extends AppCompatActivity {
 
                             Toast.makeText(getBaseContext(), newIntentResult + " Já foi escaneado", Toast.LENGTH_LONG).show();
 
-                            if (relacao.getText().toString().contains(newIntentResult)) {
-
-                                utils.autoScroll(relacaoScrollView, relacao, newIntentResult);
-                            }
+                            utils.autoScroll(relacaoScrollView, relacao, newIntentResult);
 
                         } else if (newIntentResult.contains("pastebin")) {
 
@@ -452,10 +449,7 @@ public class MainActivity extends AppCompatActivity {
 
                             Toast.makeText(getBaseContext(), intentResult.getContents() + " Já foi escaneado", Toast.LENGTH_LONG).show();
 
-                            if (relacao.getText().toString().contains(newIntentResult)) {
-
-                                utils.autoScroll(relacaoScrollView, relacao, newIntentResult);
-                            }
+                            utils.autoScroll(relacaoScrollView, relacao, intentResult.getContents());
 
                         } else {
 
@@ -485,10 +479,7 @@ public class MainActivity extends AppCompatActivity {
 
                             Toast.makeText(getBaseContext(), intentResult.getContents() + " Já foi escaneado", Toast.LENGTH_LONG).show();
 
-                            if (relacao.getText().toString().contains(newIntentResult)) {
-
-                                utils.autoScroll(relacaoScrollView, relacao, newIntentResult);
-                            }
+                            utils.autoScroll(relacaoScrollView, relacao, intentResult.getContents());
 
                         } else {
 
@@ -550,10 +541,7 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(getBaseContext(), newIntentResult + " não consta na relação", Toast.LENGTH_LONG).show();
                         }
 
-                        if (relacao.getText().toString().contains(newIntentResult)) {
-
-                            utils.autoScroll(relacaoScrollView, relacao, newIntentResult);
-                        }
+                        utils.autoScroll(relacaoScrollView, relacao, newIntentResult);
 
                         break;
                 }
