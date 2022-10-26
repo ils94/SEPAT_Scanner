@@ -258,7 +258,7 @@ public class Utils {
             editText.setText("");
 
             String mLine;
-            while ((mLine = r.readLine()) != null) {
+            while (!(mLine = r.readLine()).equals("")) {
                 relacao.append(mLine.toUpperCase().replace(",", ": ").replace("  ", " ")).append("\n");
             }
 
