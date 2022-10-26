@@ -148,6 +148,69 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         }
+
+        if (tinyDB.getString("modo") != null) {
+
+            if (!tinyDB.getString("modo").equals("")) {
+
+                modo = tinyDB.getString("modo");
+
+                switch (modo) {
+                    case "padrao":
+
+                        patrimonio.setEnabled(false);
+                        numSerie.setEnabled(false);
+                        ok.setEnabled(false);
+
+                        tinyDB.putString("modo", modo);
+
+                        setTitle("Modo: Padrão");
+
+                        Toast.makeText(this, "Modo ''Padrão'' ativado", Toast.LENGTH_SHORT).show();
+                        break;
+                    case "descricao":
+
+                        patrimonio.setEnabled(false);
+                        numSerie.setEnabled(false);
+                        ok.setEnabled(false);
+
+                        tinyDB.putString("modo", modo);
+
+                        setTitle("Modo: P com D");
+
+                        Toast.makeText(this, "Modo ''Patrimônio com descrição'' ativado", Toast.LENGTH_SHORT).show();
+                        break;
+                    case "checking":
+
+                        patrimonio.setEnabled(false);
+                        numSerie.setEnabled(false);
+                        ok.setEnabled(false);
+
+                        tinyDB.putString("modo", modo);
+
+                        setTitle("Modo: Checking");
+
+                        Toast.makeText(this, "Modo ''Checking de relação'' ativado", Toast.LENGTH_SHORT).show();
+                        break;
+                    case "ns":
+
+                        patrimonio.setEnabled(true);
+                        numSerie.setEnabled(true);
+                        ok.setEnabled(true);
+
+                        tinyDB.putString("modo", modo);
+
+                        setTitle("Modo: N° de Série");
+
+                        Toast.makeText(this, "Modo ''Número de série'' ativado", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            } else {
+
+                setTitle("Modo: Padrão");
+            }
+        }
+
     }
 
     @Override
@@ -283,6 +346,10 @@ public class MainActivity extends AppCompatActivity {
                 numSerie.setEnabled(false);
                 ok.setEnabled(false);
 
+                tinyDB.putString("modo", modo);
+
+                setTitle("Modo: Padrão");
+
                 Toast.makeText(this, "Modo ''Padrão'' ativado", Toast.LENGTH_SHORT).show();
 
                 return true;
@@ -294,6 +361,10 @@ public class MainActivity extends AppCompatActivity {
                 patrimonio.setEnabled(false);
                 numSerie.setEnabled(false);
                 ok.setEnabled(false);
+
+                tinyDB.putString("modo", modo);
+
+                setTitle("Modo: P com D");
 
                 Toast.makeText(this, "Modo ''Patrimônio com descrição'' ativado", Toast.LENGTH_SHORT).show();
 
@@ -307,6 +378,10 @@ public class MainActivity extends AppCompatActivity {
                 numSerie.setEnabled(false);
                 ok.setEnabled(false);
 
+                tinyDB.putString("modo", modo);
+
+                setTitle("Modo: Checking");
+
                 Toast.makeText(this, "Modo ''Checking de relação'' ativado", Toast.LENGTH_SHORT).show();
 
                 return true;
@@ -318,6 +393,10 @@ public class MainActivity extends AppCompatActivity {
                 patrimonio.setEnabled(true);
                 numSerie.setEnabled(true);
                 ok.setEnabled(true);
+
+                tinyDB.putString("modo", modo);
+
+                setTitle("Modo: N° de Série");
 
                 Toast.makeText(this, "Modo ''Número de série'' ativado", Toast.LENGTH_SHORT).show();
 
