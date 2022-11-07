@@ -261,7 +261,7 @@ public class Utils {
 
             while ((mLine = r.readLine()) != null) {
                 if (!mLine.equals("")) {
-                    relacao.append(mLine.toUpperCase().replace(",", ": ").replace("  ", " ")).append("\n");
+                    relacao.append(mLine.toUpperCase().replace(",", " : ").replace("  ", " ")).append("\n");
                 }
             }
 

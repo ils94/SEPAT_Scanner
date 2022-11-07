@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
                 ultimoRelacao();
 
-                relacao.append(patrimonio.getText().toString() + ", " + numSerie.getText().toString() + "\n");
+                relacao.append(patrimonio.getText().toString() + " : " + numSerie.getText().toString() + "\n");
 
                 patrimonio.setText("");
 
