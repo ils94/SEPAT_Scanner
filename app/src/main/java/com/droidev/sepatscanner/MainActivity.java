@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     CaixaDialogo caixaDialogo;
     Arquivos arquivos;
     Pastebin pastebin;
+    JSON json;
 
     TinyDB tinyDB;
 
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         caixaDialogo = new CaixaDialogo();
         arquivos = new Arquivos();
         pastebin = new Pastebin();
+        json = new JSON();
 
         tinyDB = new TinyDB(MainActivity.this);
 
@@ -112,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        String content = utils.recuperarDaMemoria(MainActivity.this, "bens.txt");
+        String content = utils.recuperarDaMemoria(MainActivity.this, "relacao.txt");
 
         relacao.setText(content);
         relacao.setFocusableInTouchMode(false);
@@ -442,7 +444,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.gerarQrCode:
 
-                pastebin.checarQrCode(MainActivity.this, relacao.getText().toString());
+                pastebin.checarQrCode(MainActivity.this, json.criarJson(MainActivity.this, relacao.getText().toString()).toString());
 
                 return true;
 
@@ -780,6 +782,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void manterNaMemoria() {
 
-        utils.manterNaMemoria(MainActivity.this, relacao.getText().toString(), "bens.txt");
+        utils.manterNaMemoria(MainActivity.this, relacao.getText().toString(), "relacao.txt");
     }
 }

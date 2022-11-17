@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -161,7 +163,9 @@ public class Pastebin {
 
                     String result = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8)).lines().collect(Collectors.joining("\n"));
 
-                    System.out.println(result);
+                    result = result.replace("https://pastebin.com/", "");
+
+                    result = "https://pastebin.com/raw/" + result;
 
                     Intent myIntent = new Intent(activity.getBaseContext(), QRCodeActivity.class);
                     myIntent.putExtra("content", result);
@@ -275,17 +279,24 @@ public class Pastebin {
                         .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36")
                         .get();
 
-                String text = doc.select(tinyDB.getString("elemento")).text().replace(",", ": ") + "\n";
+                String text = doc.select(tinyDB.getString("elemento")).text();
 
                 sb.append(text);
 
                 activity.runOnUiThread(() -> {
 
-                    editText.setText(sb);
+                    try {
+                        JSONObject jsonObject = new JSONObject(String.valueOf(sb));
 
-                    utils.contadorLinhas(editText, textView);
+                        editText.setText(jsonObject.getString("relacao"));
 
-                    utils.manterNaMemoria(activity, editText.getText().toString(), "bens.txt");
+                        utils.contadorLinhas(editText, textView);
+
+                        utils.manterNaMemoria(activity, editText.getText().toString(), "relacao.txt");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 });
 
             } catch (Exception e) {
