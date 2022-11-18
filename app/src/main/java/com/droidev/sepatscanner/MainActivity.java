@@ -476,18 +476,21 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "Cancelado", Toast.LENGTH_SHORT).show();
             } else {
 
+                newIntentResult = intentResult.getContents();
+
+                newIntentResult = StringUtils.leftPad(newIntentResult, 6, '0');
+
+                if (newIntentResult.length() == 10 && newIntentResult.startsWith("45")) {
+
+                    newIntentResult = utils.filtrarDigitos(newIntentResult);
+                } else if (newIntentResult.length() == 8 && newIntentResult.startsWith("57")) {
+
+                    newIntentResult = utils.filtrarDigitos(newIntentResult);
+                }
+
                 switch (modo) {
 
                     case "padrao":
-
-                        newIntentResult = intentResult.getContents();
-
-                        newIntentResult = StringUtils.leftPad(newIntentResult, 6, '0');
-
-                        if (newIntentResult.length() == 10 && newIntentResult.startsWith("45")) {
-
-                            newIntentResult = utils.remover45(newIntentResult);
-                        }
 
                         if (relacao.getText().toString().contains(newIntentResult)) {
 
@@ -526,19 +529,19 @@ public class MainActivity extends AppCompatActivity {
 
                     case "descricao":
 
-                        if (relacao.getText().toString().contains(intentResult.getContents())) {
+                        if (relacao.getText().toString().contains(newIntentResult)) {
 
-                            Toast.makeText(getBaseContext(), intentResult.getContents() + " Já foi escaneado", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getBaseContext(), newIntentResult + " Já foi escaneado", Toast.LENGTH_LONG).show();
 
-                            utils.autoScroll(relacaoScrollView, relacao, intentResult.getContents());
+                            utils.autoScroll(relacaoScrollView, relacao, newIntentResult);
 
                         } else {
 
-                            caixaDialogo.simplesComView(MainActivity.this, "Descrição", "Patrimônio: " + intentResult.getContents() + "\n\nInsira a descrição do bem abaixo:", "Exemplo: mesa reta", "Ok", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, i -> {
+                            caixaDialogo.simplesComView(MainActivity.this, "Descrição", "Patrimônio: " + newIntentResult + "\n\nInsira a descrição do bem abaixo:", "Exemplo: mesa reta", "Ok", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, i -> {
 
                                 ultimoRelacao();
 
-                                relacao.append(i.toUpperCase() + " : " + intentResult.getContents() + "\n");
+                                relacao.append(i.toUpperCase() + " : " + newIntentResult + "\n");
 
                                 manterNaMemoria();
 
@@ -556,29 +559,29 @@ public class MainActivity extends AppCompatActivity {
 
                     case "ns":
 
-                        if (relacao.getText().toString().contains(intentResult.getContents())) {
+                        if (relacao.getText().toString().contains(newIntentResult)) {
 
-                            Toast.makeText(getBaseContext(), intentResult.getContents() + " Já foi escaneado", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getBaseContext(), newIntentResult + " Já foi escaneado", Toast.LENGTH_LONG).show();
 
-                            utils.autoScroll(relacaoScrollView, relacao, intentResult.getContents());
+                            utils.autoScroll(relacaoScrollView, relacao, newIntentResult);
 
                         } else {
 
                             if (patrimonio.getText().toString().equals("")) {
 
-                                patrimonio.setText(intentResult.getContents());
+                                patrimonio.setText(newIntentResult);
                             } else {
 
                                 if (numSerie.getText().toString().equals("")) {
 
-                                    numSerie.setText(intentResult.getContents());
+                                    numSerie.setText(newIntentResult);
                                 } else {
 
-                                    caixaDialogo.simples(MainActivity.this, "Atenção", "Substituir o número de série atual por ''" + intentResult.getContents() + "'' ?", "Sim", "Cancelar", i -> {
+                                    caixaDialogo.simples(MainActivity.this, "Atenção", "Substituir o número de série atual por ''" + newIntentResult + "'' ?", "Sim", "Cancelar", i -> {
 
                                         if (i.equals("true")) {
 
-                                            numSerie.setText(intentResult.getContents());
+                                            numSerie.setText(newIntentResult);
                                         }
                                     });
                                 }
@@ -587,13 +590,6 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case "checking":
-
-                        newIntentResult = intentResult.getContents();
-
-                        if (newIntentResult.length() == 10 && newIntentResult.startsWith("45")) {
-
-                            newIntentResult = utils.remover45(newIntentResult);
-                        }
 
                         if (relacao.getText().toString().contains(newIntentResult + " : [OK]")) {
 

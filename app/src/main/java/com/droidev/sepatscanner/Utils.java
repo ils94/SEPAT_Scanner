@@ -235,7 +235,7 @@ public class Utils {
         }
     }
 
-    public String remover45(String string) {
+    public String filtrarDigitos(String string) {
 
         StringBuilder sb = new StringBuilder();
 
