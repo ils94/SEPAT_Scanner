@@ -668,7 +668,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void inserirManualmente() {
 
-        caixaDialogo.simplesComView(MainActivity.this, "Modo manual", "Insira o número patrimonial abaixo:", "Exemplo: 012345", "Ok", "Cancelar", InputType.TYPE_CLASS_NUMBER, false, true,
+        caixaDialogo.simplesComView(MainActivity.this, "Modo manual", "Insira o número patrimonial abaixo:", "Mínimo 6 dígitos.", "Ok", "Cancelar", InputType.TYPE_CLASS_NUMBER, false, true,
                 i -> {
 
                     switch (modo) {
