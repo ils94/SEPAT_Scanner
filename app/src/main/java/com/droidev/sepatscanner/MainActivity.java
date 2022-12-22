@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                     i -> {
                         if (i.equals("true")) {
 
-                            if (intent.getType().equals("text/comma-separated-values")) {
+                            if (intent.getType().equals("text/comma-separated-values") || intent.getType().equals("text/csv")) {
 
                                 utils.csvDataStream(MainActivity.this, relacao, data);
 
