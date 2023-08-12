@@ -476,7 +476,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "Cancelado", Toast.LENGTH_SHORT).show();
             } else {
 
-                newIntentResult = intentResult.getContents();
+                newIntentResult = intentResult.getContents().replace(".", "").replace(",", "");
 
                 newIntentResult = StringUtils.leftPad(newIntentResult, 6, '0');
 
