@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
     TinyDB tinyDB;
 
+    String num_sequencia = "";
+
     private static final int LER_ARQUIVO = 1;
 
     @Override
@@ -86,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
 
         ok.setOnClickListener(v -> {
 
+            String s = StringUtils.leftPad(patrimonio.getText().toString(), 6, '0');
+
             if (patrimonio.getText().toString().equals("") || numSerie.getText().toString().equals("")) {
 
                 Toast.makeText(MainActivity.this, "Os campos Patrimônio e Número de série não podem está vazios", Toast.LENGTH_SHORT).show();
@@ -94,9 +98,11 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), patrimonio.getText() + " Já foi escaneado", Toast.LENGTH_LONG).show();
             } else {
 
+                verificarSequencia(patrimonio.getText().toString());
+
                 ultimoRelacao();
 
-                relacao.append(patrimonio.getText().toString() + " : " + numSerie.getText().toString().toUpperCase() + "\n");
+                relacao.append(s + " : " + numSerie.getText().toString().toUpperCase() + "\n");
 
                 patrimonio.setText("");
 
@@ -569,6 +575,8 @@ public class MainActivity extends AppCompatActivity {
 
                             if (patrimonio.getText().toString().equals("")) {
 
+                                verificarSequencia(newIntentResult);
+
                                 patrimonio.setText(newIntentResult);
                             } else {
 
@@ -779,5 +787,42 @@ public class MainActivity extends AppCompatActivity {
     public void manterNaMemoria() {
 
         utils.manterNaMemoria(MainActivity.this, relacao.getText().toString(), "relacao.txt");
+    }
+
+    public void verificarSequencia(String patrimonio) {
+
+        int num_comparar;
+
+        char lastChar = patrimonio.charAt(patrimonio.length() - 1);
+
+        int num = Integer.parseInt(String.valueOf(lastChar));
+
+        if (num_sequencia.isEmpty()) {
+
+            num_sequencia = String.valueOf(lastChar);
+
+        } else {
+
+            num_comparar = Integer.parseInt(num_sequencia);
+
+            if (String.valueOf(lastChar).equals("0") && num_sequencia.equals("9")) {
+
+                num = 10;
+            }
+
+            if ((num_comparar + 1) != num) {
+
+                caixaDialogo.simples(MainActivity.this, "Sequência", "Parece que a sequência dos números patrimonias foi quebrada, deseja reiniciar a sequência?", "Sim", "Não", i -> {
+
+                    if (i.equals("true")) {
+
+                        num_sequencia = String.valueOf(lastChar);
+                    }
+                });
+            } else {
+
+                num_sequencia = String.valueOf(lastChar);
+            }
+        }
     }
 }

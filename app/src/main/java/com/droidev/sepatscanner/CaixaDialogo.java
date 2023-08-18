@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 
 public class CaixaDialogo {
@@ -80,31 +82,30 @@ public class CaixaDialogo {
 
             String string = autoCompleteTextView.getText().toString();
 
-            if (length && string.length() < 6) {
+            if (!adapter) {
 
-                Toast.makeText(context, "Erro, o campo deve conter pelo menos 6 números", Toast.LENGTH_SHORT).show();
+                string = StringUtils.leftPad(string, 6, '0');
+            }
+
+            if (!string.equals("")) {
+
+                onButtonPressed.buttonPressed(string);
+
+                if (adapter) {
+
+                    if (!historicoBens.contains(autoCompleteTextView.getText().toString())) {
+
+                        tinyDB.remove("historicoBens");
+                        historicoBens.add(autoCompleteTextView.getText().toString());
+                        tinyDB.putListString("historicoBens", historicoBens);
+                    }
+                }
+
+                dialog.dismiss();
+
             } else {
 
-                if (!string.equals("")) {
-
-                    onButtonPressed.buttonPressed(string);
-
-                    if (adapter) {
-
-                        if (!historicoBens.contains(autoCompleteTextView.getText().toString())) {
-
-                            tinyDB.remove("historicoBens");
-                            historicoBens.add(autoCompleteTextView.getText().toString());
-                            tinyDB.putListString("historicoBens", historicoBens);
-                        }
-                    }
-
-                    dialog.dismiss();
-
-                } else {
-
-                    Toast.makeText(context, "Erro, campo vazio", Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(context, "Erro, campo vazio", Toast.LENGTH_SHORT).show();
             }
         });
     }
