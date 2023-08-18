@@ -812,7 +812,7 @@ public class MainActivity extends AppCompatActivity {
 
             if ((num_comparar + 1) != num) {
 
-                caixaDialogo.simples(MainActivity.this, "Sequência", "Parece que a sequência dos números patrimonias foi quebrada, deseja reiniciar a sequência?", "Sim", "Não", i -> {
+                caixaDialogo.simples(MainActivity.this, "Sequência Quebrada", "Parece que a sequência dos números patrimoniais foi quebrada, deseja reiniciar a sequência?", "Sim", "Não", i -> {
 
                     if (i.equals("true")) {
 
