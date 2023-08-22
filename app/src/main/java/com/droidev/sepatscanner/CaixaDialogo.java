@@ -50,6 +50,43 @@ public class CaixaDialogo {
         });
     }
 
+    public void simplesTresBotoes(Context context, String title, String message, String positive, String negative, String neutral, onButtonPressed onButtonPressed) {
+
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setCancelable(false)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(positive, null)
+                .setNegativeButton(negative, null)
+                .setNeutralButton(neutral, null)
+                .show();
+
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        Button neutralButton = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+
+        positiveButton.setOnClickListener(v -> {
+
+            onButtonPressed.buttonPressed("true");
+
+            dialog.dismiss();
+        });
+
+        negativeButton.setOnClickListener(v -> {
+
+            onButtonPressed.buttonPressed("false");
+
+            dialog.dismiss();
+        });
+
+        neutralButton.setOnClickListener(v -> {
+
+            onButtonPressed.buttonPressed("neutral");
+
+            dialog.dismiss();
+        });
+    }
+
     public void simplesComView(Context context, String title, String message, String hint, String positive, String negative, int inputType, Boolean adapter, Boolean length, onButtonPressed onButtonPressed) {
 
         AutoCompleteTextView autoCompleteTextView = new AutoCompleteTextView(context);
