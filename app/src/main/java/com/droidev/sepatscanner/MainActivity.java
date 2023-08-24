@@ -482,16 +482,22 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "Cancelado", Toast.LENGTH_SHORT).show();
             } else {
 
-                newIntentResult = intentResult.getContents().replace(".", "").replace(",", "");
+                newIntentResult = intentResult.getContents();
 
-                newIntentResult = StringUtils.leftPad(newIntentResult, 6, '0');
+                if (!intentResult.getContents().contains("pastebin")) {
 
-                if (newIntentResult.length() == 10 && newIntentResult.startsWith("45")) {
+                    newIntentResult = newIntentResult.replace(".", "").replace(",", "");
 
-                    newIntentResult = utils.filtrarDigitos(newIntentResult);
-                } else if (newIntentResult.length() == 8 && newIntentResult.startsWith("57")) {
+                    newIntentResult = StringUtils.leftPad(newIntentResult, 6, '0');
 
-                    newIntentResult = utils.filtrarDigitos(newIntentResult);
+                    if (newIntentResult.length() == 10 && newIntentResult.startsWith("45")) {
+
+                        newIntentResult = utils.filtrarDigitos(newIntentResult);
+
+                    } else if (newIntentResult.length() == 8 && newIntentResult.startsWith("57")) {
+
+                        newIntentResult = utils.filtrarDigitos(newIntentResult);
+                    }
                 }
 
                 switch (modo) {

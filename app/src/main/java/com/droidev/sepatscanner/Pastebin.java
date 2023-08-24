@@ -233,26 +233,20 @@ public class Pastebin {
             String devKeyString = devKey.getText().toString();
             String elementoString = elemento.getText().toString();
 
-            if (!loginString.equals("") && !senhaString.equals("") && !devKeyString.equals("") && !elementoString.equals("")) {
+            tinyDB.remove("login");
+            tinyDB.remove("senha");
+            tinyDB.remove("devKey");
+            tinyDB.remove("elemento");
 
-                tinyDB.remove("login");
-                tinyDB.remove("senha");
-                tinyDB.remove("devKey");
-                tinyDB.remove("elemento");
+            tinyDB.putString("login", loginString);
+            tinyDB.putString("senha", senhaString);
+            tinyDB.putString("devKey", devKeyString);
+            tinyDB.putString("elemento", elementoString);
 
-                tinyDB.putString("login", loginString);
-                tinyDB.putString("senha", senhaString);
-                tinyDB.putString("devKey", devKeyString);
-                tinyDB.putString("elemento", elementoString);
+            Toast.makeText(context, "Dados salvos", Toast.LENGTH_SHORT).show();
 
-                Toast.makeText(context, "Conta salva", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
 
-                dialog.dismiss();
-
-            } else {
-
-                Toast.makeText(context, "Erro, campo vazio", Toast.LENGTH_SHORT).show();
-            }
         });
 
         neutralButton.setOnClickListener(v -> {
