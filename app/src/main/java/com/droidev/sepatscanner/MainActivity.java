@@ -26,6 +26,8 @@ import com.google.zxing.integration.android.IntentResult;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class MainActivity extends AppCompatActivity {
 
     Button scan, ok;
@@ -98,25 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), patrimonio.getText() + " Já foi escaneado", Toast.LENGTH_LONG).show();
             } else {
 
-                verificarSequencia(patrimonio.getText().toString());
-
-                ultimoRelacao();
-
-                relacao.append(s + " : " + numSerie.getText().toString().toUpperCase() + "\n");
-
-                patrimonio.setText("");
-
-                numSerie.setText("");
-
-                manterNaMemoria();
-
-                contadorLinhas();
-
-                atualRelacao();
-
-                ultimoItem = true;
-
-                voltarItem = true;
+                verificarSequencia(s);
             }
         });
 
@@ -231,11 +215,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        caixaDialogo.simples(MainActivity.this, "Sair", "Desejar sair da aplicação?", "Sim", "Não", i -> {
+        caixaDialogo.simplesTresBotoes(MainActivity.this, "Sair", "Desejar sair da aplicação?", "Sair e Salvar", "Sair sem Salvar", "Cancelar", i -> {
 
             if (i.equals("true")) {
 
                 manterNaMemoria();
+
+                MainActivity.this.finish();
+
+            } else if (i.equals("false")) {
 
                 MainActivity.this.finish();
             }
@@ -421,6 +409,8 @@ public class MainActivity extends AppCompatActivity {
                         numSerie.setText("");
 
                         contadorLinhas();
+
+                        num_sequencia = "";
                     }
                 });
 
@@ -580,8 +570,6 @@ public class MainActivity extends AppCompatActivity {
                         } else {
 
                             if (patrimonio.getText().toString().equals("")) {
-
-                                verificarSequencia(newIntentResult);
 
                                 patrimonio.setText(newIntentResult);
                             } else {
@@ -795,17 +783,23 @@ public class MainActivity extends AppCompatActivity {
         utils.manterNaMemoria(MainActivity.this, relacao.getText().toString(), "relacao.txt");
     }
 
-    public void verificarSequencia(String patrimonio) {
+    public void verificarSequencia(String s) {
 
         int num_comparar;
 
-        char lastChar = patrimonio.charAt(patrimonio.length() - 1);
+        char lastChar = s.charAt(s.length() - 1);
 
         int num = Integer.parseInt(String.valueOf(lastChar));
 
         if (num_sequencia.isEmpty()) {
 
             num_sequencia = String.valueOf(lastChar);
+
+            inserirNaRelacao(s);
+
+            patrimonio.setText("");
+
+            numSerie.setText("");
 
         } else {
 
@@ -823,12 +817,48 @@ public class MainActivity extends AppCompatActivity {
                     if (i.equals("true")) {
 
                         num_sequencia = String.valueOf(lastChar);
+
+                        inserirNaRelacao(s);
+
+                        patrimonio.setText("");
+
+                        numSerie.setText("");
+
+                    } else {
+
+                        patrimonio.setText("");
+
+                        numSerie.setText("");
                     }
                 });
+
             } else {
 
                 num_sequencia = String.valueOf(lastChar);
+
+                inserirNaRelacao(s);
+
+                patrimonio.setText("");
+
+                numSerie.setText("");
             }
         }
+    }
+
+    public void inserirNaRelacao(String s) {
+
+        ultimoRelacao();
+
+        relacao.append(s + " : " + numSerie.getText().toString().toUpperCase() + "\n");
+
+        manterNaMemoria();
+
+        contadorLinhas();
+
+        atualRelacao();
+
+        ultimoItem = true;
+
+        voltarItem = true;
     }
 }
