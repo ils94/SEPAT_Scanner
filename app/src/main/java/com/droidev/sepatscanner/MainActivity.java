@@ -158,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
 
                         setTitle("Modo: Padrão");
 
-                        Toast.makeText(this, "Modo ''Padrão'' ativado", Toast.LENGTH_SHORT).show();
                         break;
                     case "descricao":
 
@@ -170,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
 
                         setTitle("Modo: P com D");
 
-                        Toast.makeText(this, "Modo ''Patrimônio com descrição'' ativado", Toast.LENGTH_SHORT).show();
                         break;
                     case "checking":
 
@@ -182,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
 
                         setTitle("Modo: Checking");
 
-                        Toast.makeText(this, "Modo ''Checking de relação'' ativado", Toast.LENGTH_SHORT).show();
                         break;
                     case "ns":
 
@@ -194,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
 
                         setTitle("Modo: N° de Série");
 
-                        Toast.makeText(this, "Modo ''Número de série'' ativado", Toast.LENGTH_SHORT).show();
                         break;
                 }
             } else {
@@ -346,8 +342,6 @@ public class MainActivity extends AppCompatActivity {
 
                 setTitle("Modo: Padrão");
 
-                Toast.makeText(this, "Modo ''Padrão'' ativado", Toast.LENGTH_SHORT).show();
-
                 return true;
 
             case R.id.descricao:
@@ -361,8 +355,6 @@ public class MainActivity extends AppCompatActivity {
                 tinyDB.putString("modo", modo);
 
                 setTitle("Modo: P com D");
-
-                Toast.makeText(this, "Modo ''Patrimônio com descrição'' ativado", Toast.LENGTH_SHORT).show();
 
                 return true;
 
@@ -378,8 +370,6 @@ public class MainActivity extends AppCompatActivity {
 
                 setTitle("Modo: Checking");
 
-                Toast.makeText(this, "Modo ''Checking de relação'' ativado", Toast.LENGTH_SHORT).show();
-
                 return true;
 
             case R.id.ns:
@@ -393,8 +383,6 @@ public class MainActivity extends AppCompatActivity {
                 tinyDB.putString("modo", modo);
 
                 setTitle("Modo: N° de Série");
-
-                Toast.makeText(this, "Modo ''Número de série'' ativado", Toast.LENGTH_SHORT).show();
 
                 return true;
 
