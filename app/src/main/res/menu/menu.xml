@@ -78,6 +78,10 @@
                 android:id="@+id/forcarSalvar"
                 android:title="Forçar Salvar" />
 
+            <item
+                android:id="@+id/autoScan"
+                android:title="Auto Scan" />
+
         </menu>
 
     </item>

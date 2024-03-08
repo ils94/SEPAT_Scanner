@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     String modo = "padrao", ultimo, atual, newIntentResult;
 
-    Boolean ultimoItem = false, voltarItem = false;
+    Boolean ultimoItem = false, voltarItem = false, startScanAuto = false;
 
     Utils utils;
     CaixaDialogo caixaDialogo;
@@ -330,6 +330,22 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
 
+            case R.id.autoScan:
+
+                if (startScanAuto) {
+
+                    startScanAuto = false;
+
+                    Toast.makeText(this, "Auto Scan OFF.", Toast.LENGTH_SHORT).show();
+                } else {
+
+                    startScanAuto = true;
+
+                    Toast.makeText(this, "Auto Scan ON.", Toast.LENGTH_SHORT).show();
+                }
+
+                return true;
+
             case R.id.padrao:
 
                 modo = "padrao";
@@ -515,6 +531,8 @@ public class MainActivity extends AppCompatActivity {
                             voltarItem = true;
                         }
 
+                        autoScan(newIntentResult);
+
                         break;
 
                     case "descricao":
@@ -609,6 +627,8 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         utils.autoScroll(relacaoScrollView, relacao, newIntentResult);
+
+                        autoScan(newIntentResult);
 
                         break;
                 }
@@ -848,5 +868,16 @@ public class MainActivity extends AppCompatActivity {
         ultimoItem = true;
 
         voltarItem = true;
+    }
+
+    public void autoScan(String s) {
+
+        if (s.length() <= 8) {
+
+            if (startScanAuto) {
+
+                utils.scanner(MainActivity.this);
+            }
+        }
     }
 }
