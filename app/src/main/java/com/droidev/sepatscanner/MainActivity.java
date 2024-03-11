@@ -26,6 +26,8 @@ import com.google.zxing.integration.android.IntentResult;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -287,6 +289,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+                return true;
+
+            case R.id.salvar:
+
+                arquivos.salvarArquivo(MainActivity.this, 3);
 
                 return true;
 
@@ -657,6 +665,30 @@ public class MainActivity extends AppCompatActivity {
             }
 
             manterNaMemoria();
+        }
+
+        if (requestCode == 3) {
+            if (resultCode == RESULT_OK) {
+                try {
+
+                    assert data != null;
+                    Uri uri = data.getData();
+
+                    OutputStream outputStream = getContentResolver().openOutputStream(uri);
+
+                    outputStream.write(relacao.getText().toString().getBytes());
+
+                    outputStream.close();
+
+                    Toast.makeText(getBaseContext(), "Arquivo TXT salvo", Toast.LENGTH_SHORT).show();
+
+                } catch (IOException e) {
+                    Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                }
+            } else {
+
+                Toast.makeText(getBaseContext(), "Não foi possível salvar o arquivo TXT", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

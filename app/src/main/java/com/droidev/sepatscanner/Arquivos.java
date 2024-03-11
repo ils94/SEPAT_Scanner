@@ -1,8 +1,13 @@
 package com.droidev.sepatscanner;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.InputType;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
@@ -34,5 +39,33 @@ public class Arquivos {
 
             Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void salvarArquivo(Activity activity, int arquivo) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("Nome do Arquivo");
+        builder.setCancelable(false);
+
+        final EditText input = new EditText(activity);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            String text = input.getText().toString();
+
+            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("text/plain|text/csv|text/comma-separated-values");
+            intent.putExtra(Intent.EXTRA_TITLE, text + ".csv");
+
+            activity.startActivityForResult(intent, arquivo);
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
 }
