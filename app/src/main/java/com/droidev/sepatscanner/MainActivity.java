@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -127,23 +129,26 @@ public class MainActivity extends AppCompatActivity {
 
         if (data != null) {
 
-            caixaDialogo.simples(MainActivity.this, "Abrir novo arquivo",
-                    "Abrir um novo arquivo irá apagar tudo da relação atual no App. " +
-                            "Deseja continuar?",
-                    "Sim",
-                    "Não",
-                    i -> {
-                        if (i.equals("true")) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setCancelable(false);
+            builder.setTitle("Abrir nova relação");
+            builder.setMessage("Abrir uma nova relação irá apagar tudo da relação atual no App. Deseja continuar?");
 
-                            if (intent.getType().equals("text/comma-separated-values") || intent.getType().equals("text/csv")) {
+            builder.setPositiveButton("ABRIR", (dialog, which) -> {
 
-                                utils.csvDataStream(MainActivity.this, relacao, data);
+                if (intent.getType().equals("text/comma-separated-values") || intent.getType().equals("text/csv")) {
 
-                            }
+                    utils.csvDataStream(MainActivity.this, relacao, data);
 
-                            contadorLinhas();
-                        }
-                    });
+                }
+
+                contadorLinhas();
+            });
+
+            builder.setNegativeButton("CANCELAR", (dialog, which) -> dialog.cancel());
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
 
         if (tinyDB.getString("modo") != null) {
@@ -268,27 +273,13 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.enviar:
 
-                caixaDialogo.simplesComView(MainActivity.this, "Enviar relatório", "Nome do arquivo:", "Exemplo: monitores", "Enviar", "Cancelar", InputType.TYPE_CLASS_TEXT, false, false, i -> arquivos.enviarArquivo(MainActivity.this, i, relacao.getText().toString()));
+                arquivos.enviarArquivo(MainActivity.this, relacao.getText().toString());
 
                 return true;
 
             case R.id.abrir:
 
-                caixaDialogo.simples(MainActivity.this, "Abrir nova relação", "Abrir uma nova relação irá apagar tudo da relação atual no App. Deseja continuar?", "Sim", "Não", i -> {
-                    if (i.equals("true")) {
-
-                        try {
-                            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                            intent.setType("text/csv|text/comma-separated-values|application/csv");
-                            String[] mimetypes = {"text/csv", "text/comma-separated-values", "application/csv", "text/*"};
-                            intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
-                            startActivityForResult(Intent.createChooser(intent, "Abrir relação"), LER_ARQUIVO);
-                        } catch (Exception e) {
-
-                            Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                arquivos.abrirArquivo(MainActivity.this, LER_ARQUIVO);
 
                 return true;
 

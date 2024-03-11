@@ -13,32 +13,48 @@ import android.widget.Toast;
 import androidx.core.content.FileProvider;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class Arquivos {
 
-    public void enviarArquivo(Context context, String file, String content) {
+    public void enviarArquivo(Activity activity, String content) {
 
-        try {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("Enviar Relação");
 
-            content = content.replace(" : ", ",");
+        final EditText input = new EditText(activity);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
 
-            FileOutputStream out = context.openFileOutput(file + ".csv", Context.MODE_PRIVATE);
-            out.write((content.getBytes()));
-            out.close();
+        String conteudo = content.replace(" : ", ",");
 
-            File fileLocation = new File(context.getFilesDir(), file + ".csv");
-            Uri path = FileProvider.getUriForFile(context, "com.droidev.sepatscan.fileprovider", fileLocation);
+        builder.setPositiveButton("ENVIAR", (dialog, which) -> {
+            String text = input.getText().toString();
+
+            try {
+                FileOutputStream out = activity.openFileOutput(text + ".csv", Context.MODE_PRIVATE);
+
+                out.write((conteudo.getBytes()));
+                out.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            File fileLocation = new File(activity.getFilesDir(), text + ".csv");
+            Uri path = FileProvider.getUriForFile(activity, "com.droidev.sepatscan.fileprovider", fileLocation);
             Intent fileIntent = new Intent(Intent.ACTION_SEND);
             fileIntent.setType("text/csv");
             fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             fileIntent.putExtra(Intent.EXTRA_STREAM, path);
-            context.startActivity(Intent.createChooser(fileIntent, "Enviar"));
+            activity.startActivity(Intent.createChooser(fileIntent, "Enviar"));
+        });
+        builder.setNegativeButton("CANCELAR", (dialog, which) -> dialog.cancel());
 
-        } catch (Exception e) {
+        AlertDialog dialog = builder.create();
+        dialog.show();
 
-            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
-        }
     }
 
     public void salvarArquivo(Activity activity, int arquivo) {
@@ -51,7 +67,7 @@ public class Arquivos {
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
-        builder.setPositiveButton("OK", (dialog, which) -> {
+        builder.setPositiveButton("SALVAR", (dialog, which) -> {
             String text = input.getText().toString();
 
             Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
@@ -62,7 +78,34 @@ public class Arquivos {
 
             activity.startActivityForResult(intent, arquivo);
         });
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+        builder.setNegativeButton("CANCELAR", (dialog, which) -> dialog.cancel());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
+
+    public void abrirArquivo(Activity activity, int arquivo) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setCancelable(false);
+        builder.setTitle("Abrir nova relação");
+        builder.setMessage("Abrir uma nova relação irá apagar tudo da relação atual no App. Deseja continuar?");
+
+        builder.setPositiveButton("ABRIR", (dialog, which) -> {
+
+            try {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.setType("text/csv|text/comma-separated-values|application/csv");
+                String[] mimetypes = {"text/csv", "text/comma-separated-values", "application/csv", "text/*"};
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
+                activity.startActivityForResult(Intent.createChooser(intent, "Abrir relação"), arquivo);
+            } catch (Exception e) {
+
+                Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("CANCELAR", (dialog, which) -> dialog.cancel());
 
         AlertDialog dialog = builder.create();
         dialog.show();
