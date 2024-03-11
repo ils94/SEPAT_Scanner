@@ -26,7 +26,10 @@ import com.google.zxing.integration.android.IntentResult;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     String modo = "padrao", ultimo, atual, newIntentResult;
 
-    Boolean ultimoItem = false, voltarItem = false, startScanAuto = false;
+    Boolean ultimoItem = false, voltarItem = false, quickScan = false;
 
     Utils utils;
     CaixaDialogo caixaDialogo;
@@ -332,16 +335,16 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.autoScan:
 
-                if (startScanAuto) {
+                if (quickScan) {
 
-                    startScanAuto = false;
+                    quickScan = false;
 
-                    Toast.makeText(this, "Auto Scan OFF.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Quick Scan OFF.", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    startScanAuto = true;
+                    quickScan = true;
 
-                    Toast.makeText(this, "Auto Scan ON.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Quick Scan ON.", Toast.LENGTH_SHORT).show();
                 }
 
                 return true;
@@ -477,6 +480,12 @@ public class MainActivity extends AppCompatActivity {
             } else {
 
                 newIntentResult = intentResult.getContents();
+
+                if (newIntentResult.contains("APLC:TSE") || newIntentResult.contains("TIPO=UE")) {
+
+                    newIntentResult = newIntentResult.substring(Math.max(0, newIntentResult.length() - 8));
+                }
+
 
                 if (!intentResult.getContents().contains("pastebin")) {
 
@@ -874,7 +883,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (s.length() <= 8) {
 
-            if (startScanAuto) {
+            if (quickScan) {
 
                 utils.scanner(MainActivity.this);
             }

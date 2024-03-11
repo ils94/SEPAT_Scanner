@@ -80,7 +80,7 @@
 
             <item
                 android:id="@+id/autoScan"
-                android:title="Auto Scan" />
+                android:title="Quick Scan" />
 
         </menu>
 
