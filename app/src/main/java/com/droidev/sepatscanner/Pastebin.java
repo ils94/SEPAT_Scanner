@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 
 public class Pastebin {
 
-    CaixaDialogo caixaDialogo = new CaixaDialogo();
     Utils utils = new Utils();
 
     public String gerarChave(String login, String senha, String devKey) {
@@ -90,18 +89,22 @@ public class Pastebin {
 
         if (qrCode.isFile()) {
 
-            caixaDialogo.simples(activity, "Qr Code existente encontrado", "Foi encontrado um QR Code criado anteriormente, deseja abri-lo?", "Sim", "Não", i -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle("Qr Code existente encontrado");
 
-                if (i.equals("true")) {
+            builder.setMessage("Foi encontrado um QR Code criado anteriormente, deseja abri-lo?");
 
-                    Intent myIntent = new Intent(activity.getBaseContext(), QRCodeActivity.class);
-                    myIntent.putExtra("content", String.valueOf(qrCode));
-                    activity.startActivity(myIntent);
-                } else if (i.equals("false")) {
+            builder.setPositiveButton("Sim", (dialog, which) -> {
 
-                    gerarQRCode(activity, content);
-                }
+                Intent myIntent = new Intent(activity.getBaseContext(), QRCodeActivity.class);
+                myIntent.putExtra("content", String.valueOf(qrCode));
+                activity.startActivity(myIntent);
             });
+            builder.setNegativeButton("Não", (dialog, which) -> gerarQRCode(activity, content));
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
         } else {
 
             gerarQRCode(activity, content);

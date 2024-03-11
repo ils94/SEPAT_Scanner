@@ -1,11 +1,8 @@
 package com.droidev.sepatscanner;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -32,36 +30,23 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
     Button scan, ok;
-
     EditText relacao, patrimonio, numSerie;
-
     TextView relacaoTV;
-
     ScrollView relacaoScrollView;
-
     String modo = "padrao", ultimo, atual, newIntentResult;
-
     Boolean ultimoItem = false, voltarItem = false, quickScan = false;
-
     Utils utils;
-    CaixaDialogo caixaDialogo;
     Arquivos arquivos;
     Pastebin pastebin;
     JSON json;
-
     TinyDB tinyDB;
-
     String num_sequencia = "";
-
     ArrayList<String> historicoBens = new ArrayList<>();
 
     private static final int LER_ARQUIVO = 1;
@@ -72,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         utils = new Utils();
-        caixaDialogo = new CaixaDialogo();
         arquivos = new Arquivos();
         pastebin = new Pastebin();
         json = new JSON();
@@ -141,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
             builder.setPositiveButton("ABRIR", (dialog, which) -> {
 
-                if (intent.getType().equals("text/comma-separated-values") || intent.getType().equals("text/csv")) {
+                if (Objects.equals(intent.getType(), "text/comma-separated-values") || Objects.equals(intent.getType(), "text/csv")) {
 
                     utils.csvDataStream(MainActivity.this, relacao, data);
 
@@ -231,29 +215,14 @@ public class MainActivity extends AppCompatActivity {
         builder.setTitle("Sair");
         builder.setMessage("Desejar sair da aplicação?");
 
-        builder.setPositiveButton("Sair e Salvar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setPositiveButton("Sair e Salvar", (dialog, which) -> {
 
-                manterNaMemoria();
+            manterNaMemoria();
 
-                MainActivity.this.finish();
-            }
+            MainActivity.this.finish();
         });
-        builder.setNegativeButton("Sair sem Salvar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                MainActivity.this.finish();
-            }
-        });
-        builder.setNeutralButton("Cancelar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                dialog.cancel();
-            }
-        });
+        builder.setNegativeButton("Sair sem Salvar", (dialog, which) -> MainActivity.this.finish());
+        builder.setNeutralButton("Cancelar", (dialog, which) -> dialog.cancel());
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -471,7 +440,6 @@ public class MainActivity extends AppCompatActivity {
                     newIntentResult = newIntentResult.substring(Math.max(0, newIntentResult.length() - 8));
                 }
 
-
                 if (!intentResult.getContents().contains("pastebin")) {
 
                     newIntentResult = newIntentResult.replace(".", "").replace(",", "");
@@ -486,9 +454,12 @@ public class MainActivity extends AppCompatActivity {
 
                         newIntentResult = utils.filtrarDigitos(newIntentResult);
                     }
-                }
 
-                switchMode(newIntentResult, "scan");
+                    switchMode(newIntentResult, "scan");
+                } else {
+
+                    carregarPastebin(newIntentResult);
+                }
             }
 
         } else {
@@ -503,8 +474,6 @@ public class MainActivity extends AppCompatActivity {
 
                 utils.csvDataStream(MainActivity.this, relacao, uri);
             }
-
-            manterNaMemoria();
         }
 
         if (requestCode == 3) {
@@ -514,8 +483,10 @@ public class MainActivity extends AppCompatActivity {
                     assert data != null;
                     Uri uri = data.getData();
 
+                    assert uri != null;
                     OutputStream outputStream = getContentResolver().openOutputStream(uri);
 
+                    assert outputStream != null;
                     outputStream.write(relacao.getText().toString().getBytes());
 
                     outputStream.close();
@@ -530,6 +501,8 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "Não foi possível salvar o arquivo TXT", Toast.LENGTH_SHORT).show();
             }
         }
+
+        manterNaMemoria();
     }
 
     public void esperar() {
@@ -613,25 +586,30 @@ public class MainActivity extends AppCompatActivity {
 
             if ((num_comparar + 1) != num) {
 
-                caixaDialogo.simples(MainActivity.this, "Sequência Quebrada", "Parece que a sequência dos números patrimoniais foi quebrada, deseja reiniciar a sequência?", "Sim", "Não", i -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setCancelable(false);
+                builder.setTitle("Sequência Quebrada");
+                builder.setMessage("Parece que a sequência dos números patrimoniais foi quebrada, deseja reiniciar a sequência?");
 
-                    if (i.equals("true")) {
+                builder.setPositiveButton("SIM", (dialog, which) -> {
 
-                        num_sequencia = String.valueOf(lastChar);
+                    num_sequencia = String.valueOf(lastChar);
 
-                        inserirNaRelacao(s);
+                    inserirNaRelacao(s);
 
-                        patrimonio.setText("");
+                    patrimonio.setText("");
 
-                        numSerie.setText("");
-
-                    } else {
-
-                        patrimonio.setText("");
-
-                        numSerie.setText("");
-                    }
+                    numSerie.setText("");
                 });
+                builder.setNegativeButton("NÃO", (dialog, which) -> {
+
+                    patrimonio.setText("");
+
+                    numSerie.setText("");
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
 
             } else {
 
@@ -763,9 +741,14 @@ public class MainActivity extends AppCompatActivity {
         builder.setCancelable(false);
         builder.setTitle("Procurar");
 
-        final EditText input = new EditText(this);
+        final AutoCompleteTextView input = new AutoCompleteTextView(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
+
+        historicoBens = tinyDB.getListString("historicoBens");
+
+        ArrayAdapter<String> adapterBens = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, historicoBens);
+        input.setAdapter(adapterBens);
 
         builder.setPositiveButton("PROCURAR", (dialog, which) -> {
             String text = input.getText().toString();
@@ -773,8 +756,16 @@ public class MainActivity extends AppCompatActivity {
             if (!text.isEmpty()) {
 
                 utils.procurarTexto(relacao, text.toUpperCase(), relacaoTV);
+
+                if (!historicoBens.contains(input.getText().toString())) {
+
+                    tinyDB.remove("historicoBens");
+                    historicoBens.add(input.getText().toString());
+                    tinyDB.putListString("historicoBens", historicoBens);
+                }
             }
         });
+
         builder.setNegativeButton("CANCELAR", (dialog, which) -> dialog.cancel());
 
         AlertDialog dialog = builder.create();
@@ -923,5 +914,20 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
         }
+    }
+
+    public void carregarPastebin(String s) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle("Carregar nova relação");
+        builder.setMessage("Carregar uma nova relação do pastebin?");
+
+        builder.setPositiveButton("SIM", (dialog, which) -> pastebin.pastebin(MainActivity.this, s, relacao, relacaoTV));
+        builder.setNegativeButton("CANCELAR", (dialog, which) -> dialog.cancel());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
 }
