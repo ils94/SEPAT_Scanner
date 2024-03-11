@@ -221,19 +221,37 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        caixaDialogo.simplesTresBotoes(MainActivity.this, "Sair", "Desejar sair da aplicação?", "Sair e Salvar", "Sair sem Salvar", "Cancelar", i -> {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle("Sair");
+        builder.setMessage("Desejar sair da aplicação?");
 
-            if (i.equals("true")) {
+        builder.setPositiveButton("Sair e Salvar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
                 manterNaMemoria();
 
                 MainActivity.this.finish();
-
-            } else if (i.equals("false")) {
+            }
+        });
+        builder.setNegativeButton("Sair sem Salvar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
                 MainActivity.this.finish();
             }
         });
+        builder.setNeutralButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
@@ -249,7 +267,26 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.procurar:
 
-                caixaDialogo.simplesComView(MainActivity.this, "Procurar", "Digite uma palavra abaixo para realçar.", "Exemplo: estabilizador", "Procurar", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, i -> utils.procurarTexto(relacao, i.toUpperCase(), relacaoTV));
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setCancelable(false);
+                builder.setTitle("Procurar");
+
+                final EditText input = new EditText(this);
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+
+                builder.setPositiveButton("PROCURAR", (dialog, which) -> {
+                    String text = input.getText().toString();
+
+                    if (!text.isEmpty()) {
+
+                        utils.procurarTexto(relacao, text.toUpperCase(), relacaoTV);
+                    }
+                });
+                builder.setNegativeButton("CANCELAR", (dialog, which) -> dialog.cancel());
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
 
                 return true;
 
@@ -291,25 +328,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.fonte:
 
-                float scaledDensity = MainActivity.this.getResources().getDisplayMetrics().scaledDensity;
-                float sp = relacao.getTextSize() / scaledDensity;
-
-                caixaDialogo.simplesComView(MainActivity.this, "Alterar tamanho da fonte", "Insira o tamanho abaixo:", "O tamanho atual é: " + sp, "Ok", "Cancelar", (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL), false, false, i -> {
-
-                    try {
-
-                        relacao.setTextSize(TypedValue.COMPLEX_UNIT_SP, Float.parseFloat(i));
-
-                        TinyDB tinyDB = new TinyDB(MainActivity.this);
-
-                        tinyDB.remove("Fonte");
-                        tinyDB.putString("Fonte", i);
-
-                    } catch (Exception e) {
-
-                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                tamanhoFonte();
 
                 return true;
 
@@ -911,5 +930,43 @@ public class MainActivity extends AppCompatActivity {
                 utils.scanner(MainActivity.this);
             }
         }
+    }
+
+    public void tamanhoFonte() {
+
+        float scaledDensity = MainActivity.this.getResources().getDisplayMetrics().scaledDensity;
+        float sp = relacao.getTextSize() / scaledDensity;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle("Alterar tamanho da fonte");
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setHint("O tamanho atual é: " + sp);
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            String text = input.getText().toString();
+
+            try {
+
+                relacao.setTextSize(TypedValue.COMPLEX_UNIT_SP, Float.parseFloat(text));
+
+                TinyDB tinyDB = new TinyDB(MainActivity.this);
+
+                tinyDB.remove("Fonte");
+                tinyDB.putString("Fonte", text);
+
+            } catch (Exception e) {
+
+                Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("CANCELAR", (dialog, which) -> dialog.cancel());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
 }

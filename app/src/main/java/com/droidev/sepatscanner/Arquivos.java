@@ -33,6 +33,11 @@ public class Arquivos {
         builder.setPositiveButton("ENVIAR", (dialog, which) -> {
             String text = input.getText().toString();
 
+            if (text.isEmpty()) {
+
+                text = "Arquivo";
+            }
+
             try {
                 FileOutputStream out = activity.openFileOutput(text + ".csv", Context.MODE_PRIVATE);
 
@@ -70,6 +75,11 @@ public class Arquivos {
         builder.setPositiveButton("SALVAR", (dialog, which) -> {
             String text = input.getText().toString();
 
+            if (text.isEmpty()) {
+
+                text = "Arquivo";
+            }
+
             Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
 
             intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -78,6 +88,7 @@ public class Arquivos {
 
             activity.startActivityForResult(intent, arquivo);
         });
+
         builder.setNegativeButton("CANCELAR", (dialog, which) -> dialog.cancel());
 
         AlertDialog dialog = builder.create();
