@@ -14,6 +14,8 @@ import android.text.InputType;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
@@ -33,6 +35,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     TinyDB tinyDB;
 
     String num_sequencia = "";
+
+    ArrayList<String> historicoBens = new ArrayList<>();
 
     private static final int LER_ARQUIVO = 1;
 
@@ -267,26 +272,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.procurar:
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setCancelable(false);
-                builder.setTitle("Procurar");
-
-                final EditText input = new EditText(this);
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
-                builder.setView(input);
-
-                builder.setPositiveButton("PROCURAR", (dialog, which) -> {
-                    String text = input.getText().toString();
-
-                    if (!text.isEmpty()) {
-
-                        utils.procurarTexto(relacao, text.toUpperCase(), relacaoTV);
-                    }
-                });
-                builder.setNegativeButton("CANCELAR", (dialog, which) -> dialog.cancel());
-
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                procurar();
 
                 return true;
 
@@ -340,29 +326,22 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.forcarSalvar:
 
-                caixaDialogo.simples(MainActivity.this, "Salvar", "Salvar todas as alterações na relação atual?", "Sim", "Não", i -> {
-                    if (i.equals("true")) {
-
-                        manterNaMemoria();
-
-                        Toast.makeText(getBaseContext(), "Salvo", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                forcarSalvar();
 
                 return true;
 
-            case R.id.autoScan:
+            case R.id.quickScan:
 
                 if (quickScan) {
 
                     quickScan = false;
 
-                    Toast.makeText(this, "Quick Scan OFF.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Quick Scan: OFF", Toast.LENGTH_SHORT).show();
                 } else {
 
                     quickScan = true;
 
-                    Toast.makeText(this, "Quick Scan ON.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Quick Scan: ON", Toast.LENGTH_SHORT).show();
                 }
 
                 return true;
@@ -425,19 +404,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.apagar:
 
-                caixaDialogo.simples(MainActivity.this, "Apagar", "Apagar todos os campos?", "Sim", "Cancelar", i -> {
-
-                    if (i.equals("true")) {
-
-                        relacao.setText("");
-                        patrimonio.setText("");
-                        numSerie.setText("");
-
-                        contadorLinhas();
-
-                        num_sequencia = "";
-                    }
-                });
+                apagarRelacao();
 
                 return true;
 
@@ -521,144 +488,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-                switch (modo) {
-
-                    case "padrao":
-
-                        if (relacao.getText().toString().contains(newIntentResult)) {
-
-                            Toast.makeText(getBaseContext(), newIntentResult + " Já foi escaneado", Toast.LENGTH_LONG).show();
-
-                            utils.autoScroll(relacaoScrollView, relacao, newIntentResult);
-
-                        } else if (newIntentResult.contains("pastebin")) {
-
-                            caixaDialogo.simples(MainActivity.this, "Carregar nova relação", "Carregar uma nova relação do pastebin?", "Sim", "Cancelar", i -> {
-
-                                if (i.equals("true")) {
-
-                                    pastebin.pastebin(MainActivity.this, newIntentResult, relacao, relacaoTV);
-                                }
-                            });
-
-                        } else {
-
-                            ultimoRelacao();
-
-                            relacao.append(newIntentResult + "\n");
-
-                            manterNaMemoria();
-
-                            contadorLinhas();
-
-                            atualRelacao();
-
-                            ultimoItem = true;
-
-                            voltarItem = true;
-                        }
-
-                        autoScan(newIntentResult);
-
-                        break;
-
-                    case "descricao":
-
-                        if (relacao.getText().toString().contains(newIntentResult)) {
-
-                            Toast.makeText(getBaseContext(), newIntentResult + " Já foi escaneado", Toast.LENGTH_LONG).show();
-
-                            utils.autoScroll(relacaoScrollView, relacao, newIntentResult);
-
-                        } else {
-
-                            caixaDialogo.simplesComView(MainActivity.this, "Descrição", "Patrimônio: " + newIntentResult + "\n\nInsira a descrição do bem abaixo:", "Exemplo: mesa reta", "Ok", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, i -> {
-
-                                ultimoRelacao();
-
-                                relacao.append(i.toUpperCase() + " : " + newIntentResult + "\n");
-
-                                manterNaMemoria();
-
-                                contadorLinhas();
-
-                                atualRelacao();
-
-                                ultimoItem = true;
-
-                                voltarItem = true;
-                            });
-                        }
-
-                        break;
-
-                    case "ns":
-
-                        if (relacao.getText().toString().contains(newIntentResult)) {
-
-                            Toast.makeText(getBaseContext(), newIntentResult + " Já foi escaneado", Toast.LENGTH_LONG).show();
-
-                            utils.autoScroll(relacaoScrollView, relacao, newIntentResult);
-
-                        } else {
-
-                            if (patrimonio.getText().toString().equals("")) {
-
-                                patrimonio.setText(newIntentResult);
-                            } else {
-
-                                if (numSerie.getText().toString().equals("")) {
-
-                                    numSerie.setText(newIntentResult);
-                                } else {
-
-                                    caixaDialogo.simples(MainActivity.this, "Atenção", "Substituir o número de série atual por ''" + newIntentResult + "'' ?", "Sim", "Cancelar", i -> {
-
-                                        if (i.equals("true")) {
-
-                                            numSerie.setText(newIntentResult);
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                        break;
-
-                    case "checking":
-
-                        if (relacao.getText().toString().contains(newIntentResult + " : [OK]")) {
-
-                            Toast.makeText(getBaseContext(), newIntentResult + " consta na lista, e já foi escaneado", Toast.LENGTH_LONG).show();
-
-                        } else if (relacao.getText().toString().contains(newIntentResult)) {
-
-                            ultimoRelacao();
-
-                            String relacao_check = relacao.getText().toString().replace(newIntentResult, newIntentResult + " : [OK]");
-
-                            relacao.setText(relacao_check);
-
-                            Toast.makeText(getBaseContext(), newIntentResult + " consta na relação", Toast.LENGTH_LONG).show();
-
-                            manterNaMemoria();
-
-                            atualRelacao();
-
-                            ultimoItem = true;
-
-                            voltarItem = true;
-
-                        } else {
-
-                            Toast.makeText(getBaseContext(), newIntentResult + " não consta na relação", Toast.LENGTH_LONG).show();
-                        }
-
-                        utils.autoScroll(relacaoScrollView, relacao, newIntentResult);
-
-                        autoScan(newIntentResult);
-
-                        break;
-                }
+                switchMode(newIntentResult, "scan");
             }
 
         } else {
@@ -729,112 +559,24 @@ public class MainActivity extends AppCompatActivity {
 
     public void inserirManualmente() {
 
-        caixaDialogo.simplesComView(MainActivity.this, "Modo manual", "Insira o número patrimonial abaixo:", "Mínimo 6 dígitos.", "Ok", "Cancelar", InputType.TYPE_CLASS_NUMBER, false, true,
-                i -> {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Insira o número patrimonial abaixo:");
 
-                    switch (modo) {
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        builder.setView(input);
 
-                        case "checking":
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            String text = input.getText().toString();
 
-                            if (relacao.getText().toString().contains(i + " : [OK]")) {
+            text = StringUtils.leftPad(text, 6, '0');
 
-                                Toast.makeText(getBaseContext(), i + " consta na lista, e já foi escaneado", Toast.LENGTH_LONG).show();
+            switchMode(text, "manual");
+        });
+        builder.setNegativeButton("CANCELAR", (dialog, which) -> dialog.cancel());
 
-                            } else if (relacao.getText().toString().contains(i)) {
-
-                                ultimoRelacao();
-
-                                String relacao_check = relacao.getText().toString().replace(i, i + " : [OK]");
-
-                                relacao.setText(relacao_check);
-
-                                Toast.makeText(getBaseContext(), i + " consta na relação", Toast.LENGTH_LONG).show();
-
-                                manterNaMemoria();
-
-                                atualRelacao();
-
-                                ultimoItem = true;
-
-                                voltarItem = true;
-
-                            } else {
-
-                                Toast.makeText(getBaseContext(), i + " não consta na relação", Toast.LENGTH_LONG).show();
-                            }
-
-                            if (relacao.getText().toString().contains(i)) {
-
-                                utils.autoScroll(relacaoScrollView, relacao, i);
-                            }
-
-                            break;
-
-                        case "padrao":
-
-                            if (relacao.getText().toString().contains(i)) {
-
-                                Toast.makeText(getBaseContext(), i + " Já foi escaneado", Toast.LENGTH_LONG).show();
-
-                                if (relacao.getText().toString().contains(i)) {
-
-                                    utils.autoScroll(relacaoScrollView, relacao, i);
-                                }
-
-                            } else {
-
-                                ultimoRelacao();
-
-                                relacao.append(i + "\n");
-
-                                manterNaMemoria();
-
-                                contadorLinhas();
-
-                                atualRelacao();
-
-                                ultimoItem = true;
-
-                                voltarItem = true;
-
-                            }
-
-                            break;
-
-                        case "descricao":
-
-                            if (relacao.getText().toString().contains(i)) {
-
-                                Toast.makeText(getBaseContext(), i + " Já foi escaneado", Toast.LENGTH_LONG).show();
-
-                                if (relacao.getText().toString().contains(i)) {
-
-                                    utils.autoScroll(relacaoScrollView, relacao, i);
-                                }
-
-                            } else {
-
-                                caixaDialogo.simplesComView(MainActivity.this, "Descrição", "Patrimônio: " + i + "\n\nInsira a descrição do bem abaixo:", "Exemplo: mesa reta", "Ok", "Cancelar", InputType.TYPE_CLASS_TEXT, true, false, j -> {
-
-                                    ultimoRelacao();
-
-                                    relacao.append(j.toUpperCase() + " : " + i + "\n");
-
-                                    manterNaMemoria();
-
-                                    contadorLinhas();
-
-                                    atualRelacao();
-
-                                    ultimoItem = true;
-
-                                    voltarItem = true;
-                                });
-                            }
-
-                            break;
-                    }
-                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     public void manterNaMemoria() {
@@ -968,5 +710,218 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
 
+    }
+
+    public void apagarRelacao() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle("Apagar");
+        builder.setMessage("Apagar todos os campos?");
+
+        builder.setPositiveButton("APAGAR", (dialog, which) -> {
+
+            relacao.setText("");
+            patrimonio.setText("");
+            numSerie.setText("");
+
+            contadorLinhas();
+
+            num_sequencia = "";
+        });
+
+        builder.setNegativeButton("CANCELAR", (dialog, which) -> dialog.cancel());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void forcarSalvar() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle("Salvar");
+        builder.setMessage("Salvar todas as alterações na relação atual?");
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+
+            manterNaMemoria();
+
+            Toast.makeText(getBaseContext(), "Salvo", Toast.LENGTH_SHORT).show();
+
+        });
+
+        builder.setNegativeButton("CANCELAR", (dialog, which) -> dialog.cancel());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void procurar() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle("Procurar");
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("PROCURAR", (dialog, which) -> {
+            String text = input.getText().toString();
+
+            if (!text.isEmpty()) {
+
+                utils.procurarTexto(relacao, text.toUpperCase(), relacaoTV);
+            }
+        });
+        builder.setNegativeButton("CANCELAR", (dialog, which) -> dialog.cancel());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void switchMode(String i, String method) {
+
+        switch (modo) {
+
+            case "checking":
+
+                if (relacao.getText().toString().contains(i + " : [OK]")) {
+
+                    Toast.makeText(getBaseContext(), i + " consta na lista, e já foi escaneado", Toast.LENGTH_LONG).show();
+
+                } else if (relacao.getText().toString().contains(i)) {
+
+                    ultimoRelacao();
+
+                    String relacao_check = relacao.getText().toString().replace(i, i + " : [OK]");
+
+                    relacao.setText(relacao_check);
+
+                    Toast.makeText(getBaseContext(), i + " consta na relação", Toast.LENGTH_LONG).show();
+
+                    manterNaMemoria();
+
+                    atualRelacao();
+
+                    ultimoItem = true;
+
+                    voltarItem = true;
+
+                } else {
+
+                    Toast.makeText(getBaseContext(), i + " não consta na relação", Toast.LENGTH_LONG).show();
+                }
+
+                if (relacao.getText().toString().contains(i)) {
+
+                    utils.autoScroll(relacaoScrollView, relacao, i);
+                }
+
+                if (method.equals("scan")) {
+
+                    autoScan(newIntentResult);
+                }
+
+                break;
+
+            case "padrao":
+
+                if (relacao.getText().toString().contains(i)) {
+
+                    Toast.makeText(getBaseContext(), i + " Já foi escaneado", Toast.LENGTH_LONG).show();
+
+                    if (relacao.getText().toString().contains(i)) {
+
+                        utils.autoScroll(relacaoScrollView, relacao, i);
+                    }
+
+                } else {
+
+                    ultimoRelacao();
+
+                    relacao.append(i + "\n");
+
+                    manterNaMemoria();
+
+                    contadorLinhas();
+
+                    atualRelacao();
+
+                    ultimoItem = true;
+
+                    voltarItem = true;
+
+                }
+
+                if (method.equals("scan")) {
+
+                    autoScan(newIntentResult);
+                }
+
+                break;
+
+            case "descricao":
+
+                if (relacao.getText().toString().contains(i)) {
+
+                    Toast.makeText(getBaseContext(), i + " Já foi escaneado", Toast.LENGTH_LONG).show();
+
+                    if (relacao.getText().toString().contains(i)) {
+
+                        utils.autoScroll(relacaoScrollView, relacao, i);
+                    }
+
+                } else {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                    builder.setCancelable(false);
+                    builder.setTitle("Descrição");
+                    builder.setMessage("Patrimônio: " + i + "\n\nInsira a descrição do bem abaixo:");
+
+                    final AutoCompleteTextView input = new AutoCompleteTextView(this);
+                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    builder.setView(input);
+
+                    historicoBens = tinyDB.getListString("historicoBens");
+
+                    ArrayAdapter<String> adapterBens = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, historicoBens);
+                    input.setAdapter(adapterBens);
+
+                    builder.setPositiveButton("OK", (dialog, which) -> {
+                        String text = input.getText().toString();
+
+                        ultimoRelacao();
+
+                        relacao.append(text.toUpperCase() + " : " + i + "\n");
+
+                        manterNaMemoria();
+
+                        contadorLinhas();
+
+                        atualRelacao();
+
+                        ultimoItem = true;
+
+                        voltarItem = true;
+
+                        if (!historicoBens.contains(input.getText().toString())) {
+
+                            tinyDB.remove("historicoBens");
+                            historicoBens.add(input.getText().toString());
+                            tinyDB.putListString("historicoBens", historicoBens);
+                        }
+                    });
+
+                    builder.setNegativeButton("CANCELAR", (dialog, which) -> dialog.cancel());
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+
+                break;
+        }
     }
 }

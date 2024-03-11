@@ -83,7 +83,7 @@
                 android:title="Forçar Salvar" />
 
             <item
-                android:id="@+id/autoScan"
+                android:id="@+id/quickScan"
                 android:title="Quick Scan" />
 
         </menu>
